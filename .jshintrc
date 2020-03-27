@@ -2,5 +2,6 @@
   "strict": "global",
   "unused": true,
   "esversion": 6,
-  "node": true
+  "node": true,
+  "predef": ["angular"]
 }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app="angularApp">
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+  <script src="index.js"></script>
+</head>
+
+<body>
+  <div ng-controller="indexCtrl as app">
+    <center>
+      <h2>Welcome!</h2>
+      <br />
+      <h3>Enter your name below:</h3>
+      <input type="text"
+          ng-model="name1"
+          placeholder="Scope variable name" />
+      <br /><br />
+      <input type="text"
+          ng-model="app.name2"
+          placeholder="Controller variable name" />
+      <br /><br />
+      <h2 ng-if="name1 != ''"> Hello {{name1}} </h2>
+      <br />
+      <h2 ng-if="app.name2 != ''"> Hi {{app.name2}} </h2>
+    </center>
+  </div>
+</body>
+
+</html>

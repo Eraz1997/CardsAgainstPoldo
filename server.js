@@ -2,16 +2,31 @@
 
 function serverMain() {
 
-	var express = require('express');
-	var app = express();
+	const express = require('express');
+	//const bodyParser = require('body-parser');
+	const mongoose = require('mongoose');
+	const app = express();
+	const router = express.Router();
 
-	app.get('/', function(req, res) {
-		res.send('Hello World!');
+	const mongoURL = 'mongodb://localhost/testdb';
+	mongoose.connect(mongoURL, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true
 	});
 
-	app.listen(3000, function() {
-		console.log('Example app listening on port 3000!');
+	app.use(express.static('Web/test'));
+
+	router.get('/api', (request, response) => {
+		response.status(200).send({
+			message: 'Hello World!'
+		});
 	});
+	app.use(router);
+
+	const port = 3000;
+
+	app.listen(port);
+	console.log(`Server is running on port: ${port}`);
 
 }
 
