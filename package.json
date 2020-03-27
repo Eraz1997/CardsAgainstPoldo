@@ -1,0 +1,26 @@
+{
+  "name": "cardsagainstpoldo",
+  "version": "1.0.0",
+  "description": "A simple web app to play Cards Against Humanity during the COVID-19 quarantine period",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eraz1997/CardsAgainstPoldo.git"
+  },
+  "author": "itossicidipoldodev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eraz1997/CardsAgainstPoldo/issues"
+  },
+  "homepage": "https://github.com/Eraz1997/CardsAgainstPoldo#readme",
+  "dependencies": {
+    "angular": "^1.7.9",
+    "angular-route": "^1.7.9",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.6"
+  }
+}
