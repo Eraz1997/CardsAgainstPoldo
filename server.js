@@ -14,7 +14,7 @@ function serverMain() {
 		useUnifiedTopology: true
 	});
 
-	app.use(express.static('Web/test'));
+	app.use(express.static("app/Web/test"));
 
 	router.get('/api', (request, response) => {
 		response.status(200).send({
