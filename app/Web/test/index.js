@@ -1,6 +1,6 @@
 "use strict";
-angular.module('angularApp', [])
-	.controller('indexCtrl', function($scope) {
+angular.module('app', [])
+	.controller('controller', function($scope) {
 		// Initialize variables
 		$scope.name1 = '';
 		this.name2 = '';
