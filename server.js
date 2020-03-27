@@ -21,8 +21,8 @@ function serverMain() {
 
 	console.log("[+] Get endpoints");
 	const endpoints = require("./app/Node/endpoints.js");
-	for (let e of Object.keys(endpoints)) {
-		let filename = endpoints[e];
+	for (let filename of Object.keys(endpoints)) {
+		let e = endpoints[filename];
 		let method = filename.split("/")[0];
 		let endpoint = "./app/Node/" + filename + ".js";
 		let handler = require(endpoint);
