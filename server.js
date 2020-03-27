@@ -2,13 +2,13 @@
 
 function serverMain() {
 
-	const express = require('express');
-	//const bodyParser = require('body-parser');
-	const mongoose = require('mongoose');
+	const express = require("express");
+	//const bodyParser = require("body-parser");
+	const mongoose = require("mongoose");
 	const app = express();
 	const router = express.Router();
 
-	const mongoURL = 'mongodb://localhost/testdb';
+	const mongoURL = "mongodb://localhost/testdb";
 	mongoose.connect(mongoURL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
@@ -16,11 +16,9 @@ function serverMain() {
 
 	app.use(express.static("app/Web/test"));
 
-	router.get('/api', (request, response) => {
-		response.status(200).send({
-			message: 'Hello World!'
-		});
-	});
+	let handler = require("./app/Node/test/test.js");
+
+	router.get("/api", handler);
 	app.use(router);
 
 	const port = 3000;
