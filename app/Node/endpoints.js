@@ -2,6 +2,9 @@
 module.exports = {
 	// "[URL]": "[GET/POST/DELETE/PUT]/[FILE]"
 	"GET/test": "test",
+	"GET/databaseTest": "dbtest",
+
+
 	"POST/test": "test",
-	"GET/databaseTest": "dbtest"
+	"POST/card": "card"
 };
