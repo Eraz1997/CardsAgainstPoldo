@@ -6,5 +6,6 @@ module.exports = {
 	"GET/gameStarted": "gameStarted",
 	"POST/card": "card",
 	"POST/game": "game",
-	"DELETE/card": "card"
+	"DELETE/card": "card",
+	"DELETE/game": "game"
 };
