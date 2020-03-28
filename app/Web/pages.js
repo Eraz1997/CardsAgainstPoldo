@@ -1,5 +1,6 @@
 "use strict";
 module.exports = {
 	// "[URL]" : "[FOLDER_NAME]"
-	"test": "test"
+	"test": "test",
+	"pippo": "test2"
 };

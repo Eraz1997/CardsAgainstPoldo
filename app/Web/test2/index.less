@@ -1,0 +1,48 @@
+h1 {
+  font-size: 200px;
+}
+
+.cicci {
+  background-color: #ff0000;
+
+  div {
+    width: 100px;
+    height: 100px;
+    background-color: #3030ff;
+  }
+
+  &.ciao {
+    font-size: 50px;
+
+    div {
+      border-radius: 15px;
+    }
+  }
+}
+
+.provolozzo {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: #10a0ff;
+  flex-wrap: wrap;
+
+  div {
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    display: flex;
+    margin: 5px;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+
+    &.a1 {
+      flex: 0 0 200px;
+    }
+
+    &.a2 {
+      flex: 0 0 350px;
+    }
+  }
+}

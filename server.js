@@ -1,11 +1,10 @@
 "use strict";
-
-function serverMain() {
+async function serverMain() {
 
 	console.log("[+] Get requirements");
 	const express = require("express");
 	const mongoose = require("mongoose");
-	// const bodyParser = require("body-parser"); // it may be useful later
+	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
 
 	console.log("[+] Init app");
@@ -14,10 +13,16 @@ function serverMain() {
 
 	console.log("[+] Connect to database");
 	const mongoURL = "mongodb://localhost/cardsagainstpoldo";
-	mongoose.connect(mongoURL, {
+	await mongoose.connect(mongoURL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	});
+
+	//app.use(bodyParser.json());
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({
+		extended: true
+	}));
 
 	console.log("[+] Get endpoints");
 	const endpoints = require("./app/Node/endpoints.js");

@@ -1,5 +1,6 @@
 "use strict";
 module.exports = {
 	// "[URL]": "[GET/POST/DELETE/PUT]/[FILE]"
-	"GET/test": "test"
+	"GET/test": "test",
+	"POST/test": "test"
 };
