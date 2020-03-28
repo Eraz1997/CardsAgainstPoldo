@@ -15,11 +15,17 @@
       <div class="content">
         <h1>Cards Against Poldo</h1>
         <h2>{{subtitle}}</h2>
+        <p class="errorMsg">{{nickErr}}</p>
         <form class="nickInput"
-          ng-if="!playerJoined">
+          name="nickInputForm"
+          novalidate
+          ng-model="nickForm"
+          ng-show="!playerJoined">
           <input type="text"
-            class="tbox"
+            required
+            name="textbox"
             ng-model="nickname"
+            ng-maxlength=20
             autocomplete="on"/>
           <input type="submit"
             value="Entra"
@@ -29,23 +35,23 @@
           <input type="button"
             value="Inizia partita"
             ng-click="startButton_onClick()"
-            ng-if="playerJoined && playerNickname == master && players.length >= 2"/>
+            ng-show="playerJoined && playerNickname == master && players.length >= 2"/>
           <input type="button"
             value="Esci"
             ng-click="exitButton_onClick()"
-            ng-if="playerJoined"/>
+            ng-show="playerJoined"/>
         </form>
         <div>
-          <p ng-if="players.length > 0">
+          <p ng-show="players.length > 0">
             Giocatori connessi:
           </p>
-          <p ng-if="players.length == 0">
+          <p ng-show="players.length == 0">
             Nessun giocatore connesso
           </p>
           <div class="playerList"
-            ng-if="players.length > 0">
+            ng-show="players.length > 0">
             <p class="player master"
-              ng-if="master != null">
+              ng-show="master != null">
               {{master}} &#9733;
             </p>
             <p class="player"
