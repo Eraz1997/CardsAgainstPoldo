@@ -1,98 +1,66 @@
 <!doctype html>
 <html ng-app="app">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-    href="index.less"
-    type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet/less"
+      href="index.less"
+      type="text/css"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
+  </head>
 
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
-      <h1>Cards Against Poldo</h1>
-      <h2>{{subtitle}}</h2>
-      <form class="nickInput"
-        ng-if="!nickEntered">
-        <input type="text"
-          class="tbox"
-          ng-model="nickname"
-          autocomplete="on"/>
-        <input type="submit"
-          value="Entra"
-          ng-click="enterButton_onClick()"/>
-      </form>
-      <input class="nickInput"
-        type="button"
-        value="Esci"
-        ng-click="exitButton_onClick()"
-        ng-if="nickEntered"/>
-      <p>Giocatori connessi:</p>
-      <div class="playerList">
-        <p class="player"
-          ng-repeat="player in players">
-          &#9733; {{player}} //DA IMPLEMENTARE: stella solo al master
-        </p>
+  <body>
+    <div ng-controller="controller as app">
+      <div class="content">
+        <h1>Cards Against Poldo</h1>
+        <h2>{{subtitle}}</h2>
+        <form class="nickInput"
+          ng-if="!playerJoined">
+          <input type="text"
+            class="tbox"
+            ng-model="nickname"
+            autocomplete="on"/>
+          <input type="submit"
+            value="Entra"
+            ng-click="enterButton_onClick()"/>
+        </form>
+        <form class="playerJoined">
+          <input type="button"
+            value="Inizia partita"
+            ng-click="startButton_onClick()"
+            ng-if="playerJoined && playerNickname == master && players.length >= 2"/>
+          <input type="button"
+            value="Esci"
+            ng-click="exitButton_onClick()"
+            ng-if="playerJoined"/>
+        </form>
+        <div>
+          <p ng-if="players.length > 0">
+            Giocatori connessi:
+          </p>
+          <p ng-if="players.length == 0">
+            Nessun giocatore connesso
+          </p>
+          <div class="playerList"
+            ng-if="players.length > 0">
+            <p class="player master"
+              ng-if="master != null">
+              {{master}} &#9733;
+            </p>
+            <p class="player"
+              ng-repeat="player in players"
+              ng-show="player != master">
+              {{player}}
+            </p>
+          </div>
+        </div>
+        <div class="footer">
+          <a href="/cardManager" class="footer">
+            Gestisci carte
+          </a>
+        </div>
       </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <span class="cicci"> CICCIO
-      <div>
-      </div></span>
-    <span class="cicci ciao"> CIAO
-      <div>
-      </div></span>
-    <div class="provolozzo">
-      <div class="a1">
-        A
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-      <div class="a2">
-
-      </div>
-    </div>
-    <div>
-      CIAONEONE
-    </div>
-
-    <div ng-repeat="card in cards track by $index">
-      #{{$index + card}} {{card}}
-    </div>
-  </div>
-</body>
-
+  </body>
 </html>

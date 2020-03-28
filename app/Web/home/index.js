@@ -11,22 +11,22 @@ angular.module("app", [])
 		];
 		$scope.subtitle = subtitleArray[Math.floor(Math.random() * subtitleArray.length)];
 
+		$scope.master = null;
 		$scope.players = [
-			"A",
-			"B"
 		];
-		$scope.nickEntered = false;
+		$scope.playerJoined = false;
 		$scope.enterButton_onClick = async function() {
 			// controllare se nick esiste già
 			// se non esiste aggiungerlo
+			// se è primo, impostarlo come master
 			// se tutto funziona:
-			$scope.nickEntered = true;
+			$scope.playerJoined = true;
 		};
 
 		$scope.exitButton_onClick = async function() {
 			// rimuovere il propio utente
 			// se sei il master assegnarlo al prossimo in lista
-			$scope.nickEntered = false;
+			$scope.playerJoined = false;
 		};
 
 
