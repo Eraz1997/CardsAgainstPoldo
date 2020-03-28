@@ -93,5 +93,6 @@ module.exports = dbManager;
 		await dbManager.close();
 	} catch (err) {
 		console.log(err);
+		dbManager.close();
 	}
 */

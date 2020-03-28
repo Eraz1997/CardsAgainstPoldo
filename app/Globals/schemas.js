@@ -12,7 +12,7 @@ Schemas.user = new Schema({
 			unique: true
 		}
 	},
-	cards: [Number],
+	cards: [String],
 	points: Number,
 	isMaster: Boolean
 });
@@ -33,8 +33,8 @@ Schemas.card = new Schema({
 });
 
 Schemas.game = new Schema({
-	whiteDeck: [Number],
-	blackDeck: [Number],
+	whiteDeck: [String],
+	blackDeck: [String],
 	isStarted: Boolean
 });
 
