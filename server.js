@@ -3,7 +3,7 @@ async function serverMain() {
 
 	console.log("[+] Get requirements");
 	const express = require("express");
-	const mongoose = require("mongoose");
+	const dbManager = require("./app/Globals/dbManager.js");
 	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
 
@@ -12,13 +12,8 @@ async function serverMain() {
 	const router = express.Router();
 
 	console.log("[+] Connect to database");
-	const mongoURL = "mongodb://localhost/cardsagainstpoldo";
-	await mongoose.connect(mongoURL, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true
-	});
+	await dbManager.init();
 
-	//app.use(bodyParser.json());
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
 		extended: true

@@ -3,5 +3,6 @@
   "unused": true,
   "esversion": 9,
   "node": true,
-  "predef": ["angular"]
+  "predef": ["angular"],
+  "indent": 1
 }
