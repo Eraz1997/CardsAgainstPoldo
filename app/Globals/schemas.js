@@ -35,7 +35,8 @@ Schemas.card = new Schema({
 Schemas.game = new Schema({
 	whiteDeck: [String],
 	blackDeck: [String],
-	isStarted: Boolean
+	isStarted: Boolean,
+	isEnded: Boolean
 });
 
 module.exports = Schemas;
