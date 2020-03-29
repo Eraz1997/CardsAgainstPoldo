@@ -2,18 +2,19 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 		let userNickname = request.query.userNickname;
 
-		await dbManager.connect();
+		connection = await dbManager.connect();
 
-		let games = await dbManager.models.games.select({});
+		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isStarted || games[0].isEnded) {
 			throw "Partita ancora non iniziata o già conclusa";
 		}
 
-		let user = await dbManager.models.users.select({
+		let user = await connection.models.users.select({
 			nickname: userNickname
 		});
 		if (!user) {
@@ -23,13 +24,13 @@ module.exports = async function(request, response) {
 			throw "Il master non può giocare carte bianche";
 		}
 
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send(user.cards);
 
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

@@ -2,6 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 		let nick = request.body.userNickname;
@@ -11,27 +12,27 @@ module.exports = async function(request, response) {
 		if (!nick || nick === "") {
 			throw "Nickname non inserito";
 		}
-		await dbManager.connect();
+		connection = await dbManager.connect();
 
-		//await dbManager.models.users.destroy({}); //PER RIPULIRE IL DATABASE IN FASE DI TEST
-		let existingUser = await dbManager.models.users.select({
+		//await connection.models.users.destroy({}); //PER RIPULIRE IL DATABASE IN FASE DI TEST
+		let existingUser = await connection.models.users.select({
 			nickname: nick
 		});
 		if (existingUser.length) {
 			throw "Nickname già usato";
 		}
-		let checkMaster = await dbManager.models.users.select({}, ["nickname"]);
+		let checkMaster = await connection.models.users.select({}, ["nickname"]);
 		if (checkMaster.length === 0) {
 			isMaster = true;
 		}
 
 		if (isMaster) {
-			let whiteDeck = (await dbManager.models.cards.select({
+			let whiteDeck = (await connection.models.cards.select({
 				isBlack: false
 			})).map(function(item) {
 				return item.uuid;
 			});
-			let blackDeck = (await dbManager.models.cards.select({
+			let blackDeck = (await connection.models.cards.select({
 				isBlack: true
 			})).map(function(item) {
 				return item.uuid;
@@ -44,8 +45,8 @@ module.exports = async function(request, response) {
 			});
 			cards = whiteDeck.splice(0, 10);
 			//console.log(cards);
-			await dbManager.models.games.destroy({});
-			await dbManager.models.games.create({
+			await connection.models.games.destroy({});
+			await connection.models.games.create({
 				whiteDeck: whiteDeck,
 				blackDeck: blackDeck,
 				isStarted: false,
@@ -55,18 +56,18 @@ module.exports = async function(request, response) {
 				currentBlackCard: null
 			});
 		} else {
-			let games = await dbManager.models.games.select({});
+			let games = await connection.models.games.select({});
 			if (!games.length) {
 				throw "Errore, gioco non trovato";
 			}
 			let whiteDeck = games[0].whiteDeck;
 			cards = whiteDeck.splice(0, 10);
-			await dbManager.models.games.modify({}, {
+			await connection.models.games.modify({}, {
 				whiteDeck: whiteDeck
 			});
 		}
 
-		await dbManager.models.users.create({
+		await connection.models.users.create({
 			nickname: nick,
 			cards: cards,
 			points: 0,
@@ -75,13 +76,13 @@ module.exports = async function(request, response) {
 		});
 
 
-		//console.log(await dbManager.models.users.select({}));
+		//console.log(await connection.models.users.select({}));
 		//console.log(isMaster);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

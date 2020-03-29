@@ -2,6 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 
@@ -14,30 +15,30 @@ module.exports = async function(request, response) {
 			throw "Parametri non presenti";
 		}
 
-		await dbManager.connect();
+		connection = await dbManager.connect();
 
-		let user = await dbManager.models.users.select({
+		let user = await connection.models.users.select({
 			nickname: userNickname
 		});
 		if (!user.length) {
 			throw "Utente non trovato";
 		}
 
-		let turnWinner = await dbManager.models.users.select({
+		let turnWinner = await connection.models.users.select({
 			response: cardUUIDs
 		});
 		if (!turnWinner.length) {
 			throw "Carte non trovate";
 		}
 
-		let games = await dbManager.models.games.select({});
+		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isStarted) {
 			throw "Gioco non trovato";
 		}
 
 		let whiteCards = games[0].whiteDeck;
 		let blackCards = games[0].blackDeck;
-		let players = await dbManager.models.users.select({
+		let players = await connection.models.users.select({
 			nickname: {
 				$ne: userNickname
 			}
@@ -50,7 +51,7 @@ module.exports = async function(request, response) {
 
 			await players.map(async function(player) {
 				player.cards = player.cards.concat(whiteCards.splice(0, cardUUIDs.length));
-				await dbManager.models.users.modify({
+				await connection.models.users.modify({
 					nickname: player.nickname
 				}, {
 					cards: player.cards,
@@ -58,7 +59,7 @@ module.exports = async function(request, response) {
 				});
 			});
 
-			await dbManager.models.games.modify({}, {
+			await connection.models.games.modify({}, {
 				currentBlackCard: newBlackCard,
 				turnWinner: turnWinner.nickname,
 				turnWinnerCard: cardUUIDs,
@@ -67,29 +68,29 @@ module.exports = async function(request, response) {
 			});
 
 		} else {
-			await dbManager.models.games.modify({}, {
+			await connection.models.games.modify({}, {
 				isEnded: true
 			});
 		}
 
-		await dbManager.models.users.modify({
+		await connection.models.users.modify({
 			nickname: turnWinner.nickname
 		}, {
 			points: turnWinner.points + 1,
 			isMaster: true,
 			response: null
 		});
-		await dbManager.models.users.modify({
+		await connection.models.users.modify({
 			nickname: userNickname
 		}, {
 			isMaster: false
 		});
 
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

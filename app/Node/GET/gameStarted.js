@@ -2,11 +2,12 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 	try {
-		await dbManager.connect();
-		let games = await dbManager.models.games.select({});
+		connection = await dbManager.connect();
+		let games = await connection.models.games.select({});
 		let result = !!(games.length && games[0].isStarted && !games[0].isEnded);
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send({
 			started: result
@@ -14,7 +15,7 @@ module.exports = async function(request, response) {
 
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

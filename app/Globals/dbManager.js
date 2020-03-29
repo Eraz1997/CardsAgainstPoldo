@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 let dbManager = {};
 dbManager.databaseURL = "mongodb://localhost/cardsagainstpoldo";
 
-var createFunction = function(model) {
+var createFunctionFactory = function(model) {
 
 	return async function(object) {
 		let obj = new model(object);
@@ -13,7 +13,7 @@ var createFunction = function(model) {
 	};
 };
 
-var selectFunction = function(model) {
+var selectFunctionFactory = function(model) {
 
 	return async function(query, projection, sortAttribute, sortDirection) {
 		let sortDir = sortDirection === "ASC" ? 1 : -1;
@@ -26,7 +26,7 @@ var selectFunction = function(model) {
 	};
 };
 
-var modifyFunction = function(model) {
+var modifyFunctionFactory = function(model) {
 
 	return async function(query, object) {
 		return await model.updateMany(query, {
@@ -37,21 +37,28 @@ var modifyFunction = function(model) {
 	};
 };
 
-var destroyFunction = function(model) {
+var destroyFunctionFactory = function(model) {
 
 	return async function(query) {
 		return await model.deleteMany(query);
 	};
 };
 
-dbManager.getModels = async function() {
-	dbManager.models = {};
+let closeConnectionFunctionFactory = function(connection) {
+	return async function() {
+		await connection.removeAllListeners();
+		await connection.close();
+	};
+};
+
+dbManager.getModels = async function(connection) {
+	connection.models = {};
 	for (let key of Object.keys(Schemas)) {
-		dbManager.models[key + "s"] = await mongoose.model(key, Schemas[key]);
-		dbManager.models[key + "s"].create = createFunction(dbManager.models[key + "s"]);
-		dbManager.models[key + "s"].select = selectFunction(dbManager.models[key + "s"]);
-		dbManager.models[key + "s"].modify = modifyFunction(dbManager.models[key + "s"]);
-		dbManager.models[key + "s"].destroy = destroyFunction(dbManager.models[key + "s"]);
+		connection.models[key + "s"] = await mongoose.model(key, Schemas[key]);
+		connection.models[key + "s"].create = createFunctionFactory(connection.models[key + "s"]);
+		connection.models[key + "s"].select = selectFunctionFactory(connection.models[key + "s"]);
+		connection.models[key + "s"].modify = modifyFunctionFactory(connection.models[key + "s"]);
+		connection.models[key + "s"].destroy = destroyFunctionFactory(connection.models[key + "s"]);
 	}
 };
 
@@ -61,20 +68,17 @@ dbManager.connect = async function() {
 		useUnifiedTopology: true,
 		useCreateIndex: true
 	});
-	dbManager.db = mongoose.connection;
-	dbManager.db.on('error', console.error.bind(console, 'MongoDB error:'));
-	await dbManager.getModels();
-};
-
-dbManager.close = async function() {
-	dbManager.db.removeAllListeners();
-	await dbManager.db.close();
+	let connection = mongoose.connection;
+	connection.on('error', console.error.bind(console, 'MongoDB error:'));
+	await dbManager.getModels(connection);
+	connection.closeConnection = closeConnectionFunctionFactory(connection);
+	return connection;
 };
 
 dbManager.init = async function() {
 	try {
-		await dbManager.connect();
-		await dbManager.close();
+		let connection = await dbManager.connect();
+		await connection.closeConnection();
 	} catch (err) {
 		console.log(err);
 	}

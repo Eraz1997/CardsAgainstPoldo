@@ -2,6 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 		let uuid = request.query.uuid;
@@ -9,22 +10,22 @@ module.exports = async function(request, response) {
 		if (!uuid || uuid === "") {
 			throw "Identificativo carta non presente";
 		}
-		await dbManager.connect();
-		let existingCards = await dbManager.models.cards.select({
+		connection = await dbManager.connect();
+		let existingCards = await connection.models.cards.select({
 			uuid: uuid
 		});
 		if (!existingCards.length) {
 			throw "Carta non trovata";
 		}
-		await dbManager.models.cards.destroy({
+		await connection.models.cards.destroy({
 			uuid: uuid
 		});
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

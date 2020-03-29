@@ -2,6 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 		let userNickname = request.query.userNickname;
@@ -9,50 +10,50 @@ module.exports = async function(request, response) {
 		if (!userNickname || userNickname === "") {
 			throw "Parametro non presente";
 		}
-		await dbManager.connect();
+		connection = await dbManager.connect();
 
-		let user = await dbManager.models.users.select({
+		let user = await connection.models.users.select({
 			nickname: userNickname
 		});
 		if (!user.length) {
 			throw "Giocatore non trovato";
 		}
 		user = user[0];
-		let otherUsers = await dbManager.models.users.select({
+		let otherUsers = await connection.models.users.select({
 			nickname: {
 				$ne: userNickname
 			}
 		});
 
-		let games = await dbManager.models.games.select({});
+		let games = await connection.models.games.select({});
 		if (!games.length) {
 			throw "Errore di inconsistenza: gioco non trovato, ma utente presente";
 		}
 		let game = games[0];
 
 		if (!otherUsers.length) {
-			await dbManager.models.games.destroy({});
-			await dbManager.models.users.destroy({});
+			await connection.models.games.destroy({});
+			await connection.models.users.destroy({});
 		} else if (user.isMaster) {
 			if (game.isStarted && !game.isEnded) {
 				throw "Il master non può uscire dalla partita";
 			} else if (!game.isStarted) {
-				await dbManager.models.users.modify({
+				await connection.models.users.modify({
 					nickname: otherUsers[0].nickname
 				}, {
 					isMaster: true
 				});
 			}
 		}
-		await dbManager.models.users.destroy({
+		await connection.models.users.destroy({
 			nickname: userNickname
 		});
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

@@ -2,13 +2,14 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 	try {
-		await dbManager.connect();
-		let games = await dbManager.models.games.select({});
+		connection = await dbManager.connect();
+		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isEnded) {
 			throw "Partita non iniziata o non ancora conclusa";
 		}
-		let users = await dbManager.models.users.select({}, ["nickname", "points"], "points", "DESC");
+		let users = await connection.models.users.select({}, ["nickname", "points"], "points", "DESC");
 		if (!users.length) {
 			throw "Nessun giocatore trovato";
 		}
@@ -17,7 +18,7 @@ module.exports = async function(request, response) {
 				return current;
 			}
 		}, null);
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send({
 			winner: winner,
@@ -26,7 +27,7 @@ module.exports = async function(request, response) {
 
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

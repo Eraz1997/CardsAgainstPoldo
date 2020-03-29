@@ -2,10 +2,11 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 	try {
-		await dbManager.connect();
-		let users = await dbManager.models.users.select({}, ["nickname", "isMaster"]);
-		await dbManager.close();
+		connection = await dbManager.connect();
+		let users = await connection.models.users.select({}, ["nickname", "isMaster"]);
+		await connection.closeConnection();
 
 		response.status(200).send({
 			users: users
@@ -13,7 +14,7 @@ module.exports = async function(request, response) {
 
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

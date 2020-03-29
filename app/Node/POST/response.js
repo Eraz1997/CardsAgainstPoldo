@@ -2,6 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 
 	try {
 		let userNickname = request.body.userNickname;
@@ -10,8 +11,8 @@ module.exports = async function(request, response) {
 		if (!userNickname || userNickname === "" || !cards || cards === "" || !cards.length) {
 			throw "Parametro non presente";
 		}
-		await dbManager.connect();
-		let user = await dbManager.models.users.select({
+		connection = await dbManager.connect();
+		let user = await connection.models.users.select({
 			nickname: userNickname
 		});
 		if (!user.length) {
@@ -20,12 +21,12 @@ module.exports = async function(request, response) {
 		if (user.isMaster) {
 			throw "Il master non può dare risposte";
 		}
-		let games = await dbManager.models.games.select({});
+		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isStarted || !games[0].currentBlackCard || games[0].isEnded) {
 			throw "Gioco non ancora creato";
 		}
 		let game = games[0];
-		let blackCard = await dbManager.models.cards.select({
+		let blackCard = await connection.models.cards.select({
 			uuid: game.currentBlackCard
 		});
 		if (user.response) {
@@ -49,19 +50,19 @@ module.exports = async function(request, response) {
 			return !cards.includes(card);
 		});
 
-		await dbManager.models.users.modify({
+		await connection.models.users.modify({
 			nickname: userNickname
 		}, {
 			cards: userUpdatedCards,
 			response: cards
 		});
 
-		await dbManager.close();
+		await connection.closeConnection();
 
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(400).send({
 			error: err
 		});

@@ -2,9 +2,10 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
+	let connection;
 	try {
-		await dbManager.connect();
-		let blackCard = await dbManager.models.games.select({});
+		connection = await dbManager.connect();
+		let blackCard = await connection.models.games.select({});
 
 		if (!blackCard.length) {
 			throw "Nessun game presente!";
@@ -12,11 +13,11 @@ module.exports = async function(request, response) {
 		if (!blackCard[0].currentBlackCard) {
 			throw "Carta vuota!";
 		}
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(200).send(blackCard[0].currentBlackCard);
 	} catch (err) {
 		console.log(err);
-		await dbManager.close();
+		await connection.closeConnection();
 		response.status(200).send({
 			error: err
 		});
