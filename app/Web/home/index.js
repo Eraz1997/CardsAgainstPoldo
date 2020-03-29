@@ -25,24 +25,24 @@ angular.module("app", [])
 		$scope.nickBoxDisabled = false;
 
 		async function polling() {
+
 			try {
 				let getUsers = await $http.get("/api/users");
 				$scope.playerErr = "";
-				let users = getUsers.data.users;
-				for (let i = 0; i < users.length; i++) {
-					$scope.players[i] = users[i][0];
-					if (users[i][1] == true) {
-						$scope.master = users[i][0];
-					}
-				}
+				$scope.players = getUsers.data.users.map(function(user) {
+					return user.nickname;
+				});
+				$scope.master = $scope.players.length ? getUsers.data.users.filter(function(user) {
+					return user.isMaster;
+				})[0].nickname : "";
 			} catch (err) {
 				$scope.playersErr = err.data.error;
 			}
 
-			if ($scope.playerJoined == true) {
+			if ($scope.playerJoined) {
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
-					if (getGameStarted.data.started == true) {
+					if (getGameStarted.data.started) {
 						$window.location.replace("/game!#?nickname=" + $scope.nickname);
 					}
 				} catch (err) {
@@ -50,7 +50,8 @@ angular.module("app", [])
 				}
 			}
 		}
-		$interval(polling(), 500);
+		await polling();
+		await $interval(polling, 1000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo
@@ -65,7 +66,9 @@ angular.module("app", [])
 			} else {
 				$scope.nickBoxDisabled = true;
 				try {
-					await $http.post("/api/user", $scope.nickname); //invia nuovo nome utente
+					await $http.post("/api/user", {
+						userNickname: $scope.nickname
+					}); //invia nuovo nome utente
 					$scope.nickErr = "";
 					$scope.playerJoined = true;
 				} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
@@ -77,7 +80,7 @@ angular.module("app", [])
 
 		$scope.exitButton_onClick = async function() {
 			try {
-				await $http.delete("/api/user", $scope.nickname);
+				await $http.delete("/api/user?userNickname=" + $scope.nickname);
 				$scope.nickErr = "";
 				$scope.playerJoined = false;
 				$scope.nickBoxDisabled = false;
@@ -88,7 +91,9 @@ angular.module("app", [])
 
 		$scope.startButton_onClick = async function() {
 			try {
-				await $http.post("/api/game", $scope.nickname);
+				await $http.post("/api/game", {
+					userNickname: $scope.nickname
+				});
 				$window.location.replace("/game!#?nickname=" + $scope.nickname);
 			} catch (err) {
 				$scope.nickErr = err.data.error;

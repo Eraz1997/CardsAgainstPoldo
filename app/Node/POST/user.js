@@ -4,7 +4,7 @@ const dbManager = require("../../Globals/dbManager.js");
 module.exports = async function(request, response) {
 
 	try {
-		let nick = request.body.nickname;
+		let nick = request.body.userNickname;
 		let cards = [];
 		let isMaster = false;
 
