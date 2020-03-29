@@ -8,17 +8,21 @@ module.exports = async function(request, response) {
 		if (!games.length || !games[0].isEnded) {
 			throw "Partita non iniziata o non ancora conclusa";
 		}
-		let winner = await dbManager.models.users.select({}).reduce(function(best, current) {
+		let users = await dbManager.models.users.select({}, ["nickname", "points"], "points", "DESC");
+		if (!users.length) {
+			throw "Nessun giocatore trovato";
+		}
+		let winner = users.reduce(function(best, current) {
 			if (best === null || current.points > best.points) {
 				return current;
 			}
 		}, null);
-		if (!winner) {
-			throw "Nessun giocatore trovato";
-		}
 		await dbManager.close();
 
-		response.status(200).send(winner);
+		response.status(200).send({
+			winner: winner,
+			scoreboard: users
+		});
 
 	} catch (err) {
 		console.log(err);
