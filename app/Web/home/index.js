@@ -20,35 +20,33 @@ angular.module("app", [])
 		$scope.playersErr = "";
 		$scope.nickname = "";
 		$scope.master = null;
-		$scope.players = [
-		];
+		$scope.players = [];
 		$scope.playerJoined = false;
 		$scope.nickBoxDisabled = false;
 
 		async function polling() {
-			let getUsers = await $http.get("/api/users");
-			if (getUsers.status == 200) {
+			try {
+				let getUsers = await $http.get("/api/users");
 				$scope.playerErr = "";
 				let users = getUsers.data.users;
 				for (let i = 0; i < users.length; i++) {
 					$scope.players[i] = users[i][0];
-					if (users[i][1] == true){
+					if (users[i][1] == true) {
 						$scope.master = users[i][0];
 					}
 				}
+			} catch (err) {
+				$scope.playersErr = err.data.error;
 			}
-			else {
-				$scope.playersErr = getUsers.data.error;
-			}
+
 			if ($scope.playerJoined == true) {
-				let getGameStarted = await $http.get("/api/gameStarted");
-				if (getGameStarted.status == 200) {
+				try {
+					let getGameStarted = await $http.get("/api/gameStarted");
 					if (getGameStarted.data.started == true) {
-						$window.location.replace("/game!#?nickname="+$scope.nickname);
+						$window.location.replace("/game!#?nickname=" + $scope.nickname);
 					}
-				}
-				else {
-					$scope.playersErr = getGameStarted.data.error;
+				} catch (err) {
+					$scope.playersErr = err.data.error;
 				}
 			}
 		}
@@ -59,47 +57,41 @@ angular.module("app", [])
 			if (!$scope.nickInputForm.$valid) {
 				if ($scope.nickInputForm.$error.required) {
 					$scope.nickErr = "Inserisci un nickname maledetto autista";
-				}
-				else if($scope.nickInputForm.textbox.$error.maxlength !== undefined) {
+				} else if ($scope.nickInputForm.textbox.$error.maxlength !== undefined) {
 					$scope.nickErr = "È troppo lungo";
-				}
-				else {
+				} else {
 					console.log($scope.nickInputForm.$error);
 				}
-			}
-			else {
+			} else {
 				$scope.nickBoxDisabled = true;
-				let postUser = await $http.post("/api/user", $scope.nickname); //invia nuovo nome utente
-				if (postUser.status == 200) {
+				try {
+					await $http.post("/api/user", $scope.nickname); //invia nuovo nome utente
 					$scope.nickErr = "";
 					$scope.playerJoined = true;
-				}
-				else { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
-					$scope.nickErr = postUser.data.error;
+				} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
+					$scope.nickErr = err.data.error;
 					$scope.nickBoxDisabled = false;
 				}
 			}
 		};
 
 		$scope.exitButton_onClick = async function() {
-			let deleteUser = await $http.delete("/api/user", $scope.nickname);
-			if (deleteUser.status == 200) {
+			try {
+				await $http.delete("/api/user", $scope.nickname);
 				$scope.nickErr = "";
 				$scope.playerJoined = false;
 				$scope.nickBoxDisabled = false;
-			}
-			else {
-				$scope.nickErr = deleteUser.data.error;
+			} catch (err) {
+				$scope.nickErr = err.data.error;
 			}
 		};
 
 		$scope.startButton_onClick = async function() {
-			let postGame = await $http.post("/api/game", $scope.nickname);
-			if (postGame.status == 200) {
-				$window.location.replace("/game!#?nickname="+$scope.nickname);
-			}
-			else {
-				$scope.nickErr = postGame.data.error;
+			try {
+				await $http.post("/api/game", $scope.nickname);
+				$window.location.replace("/game!#?nickname=" + $scope.nickname);
+			} catch (err) {
+				$scope.nickErr = err.data.error;
 			}
 		};
 	});

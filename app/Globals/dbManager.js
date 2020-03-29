@@ -67,6 +67,7 @@ dbManager.connect = async function() {
 };
 
 dbManager.close = async function() {
+	dbManager.db.removeAllListeners();
 	await dbManager.db.close();
 };
 

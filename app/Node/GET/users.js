@@ -7,10 +7,13 @@ module.exports = async function(request, response) {
 		let users = await dbManager.models.users.select({}, ["nickname", "isMaster"]);
 		await dbManager.close();
 
-		response.status(200).send(users);
+		response.status(200).send({
+			users: users
+		});
 
 	} catch (err) {
-		dbManager.close();
+		console.log(err);
+		await dbManager.close();
 		response.status(400).send({
 			error: err
 		});

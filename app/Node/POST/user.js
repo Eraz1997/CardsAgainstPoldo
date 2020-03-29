@@ -80,7 +80,8 @@ module.exports = async function(request, response) {
 		await dbManager.close();
 		response.status(200).send({});
 	} catch (err) {
-		dbManager.close();
+		console.log(err);
+		await dbManager.close();
 		response.status(400).send({
 			error: err
 		});

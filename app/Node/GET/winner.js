@@ -25,7 +25,8 @@ module.exports = async function(request, response) {
 		});
 
 	} catch (err) {
-		dbManager.close();
+		console.log(err);
+		await dbManager.close();
 		response.status(400).send({
 			error: err
 		});

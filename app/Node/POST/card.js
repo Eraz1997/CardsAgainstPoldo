@@ -11,7 +11,7 @@ module.exports = async function(request, response) {
 		if (!text || text === "") {
 			throw "Testo non presente";
 		}
-		let uuid = sha256(text);
+		let uuid = sha256(text + (isBlack ? "_BLACK" : "_WHITE"));
 		await dbManager.connect();
 		let existingCards = await dbManager.models.cards.select({
 			uuid: uuid
@@ -28,7 +28,8 @@ module.exports = async function(request, response) {
 
 		response.status(200).send({});
 	} catch (err) {
-		dbManager.close();
+		console.log(err);
+		await dbManager.close();
 		response.status(400).send({
 			error: err
 		});

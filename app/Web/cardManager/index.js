@@ -3,14 +3,14 @@ angular.module("app", [])
 	.controller("controller", async function($scope, $http, $window) {
 
 		let getCards = async function() {
-			let cards = await $http.get("/api/deck");
-			if (cards.status !== 200) {
-				$window.alert(cards.data.error);
-				return;
+			try {
+				let cards = await $http.get("/api/deck");
+				$scope.whiteDeck = cards.data.whiteDeck;
+				$scope.blackDeck = cards.data.blackDeck;
+				$scope.$digest();
+			} catch (err) {
+				$window.alert(err.data.error);
 			}
-			$scope.whiteDeck = cards.data.whiteDeck;
-			$scope.blackDeck = cards.data.blackDeck;
-			$scope.$digest();
 		};
 
 		await getCards();
@@ -19,11 +19,11 @@ angular.module("app", [])
 			if (!card.text || card.text === "") {
 				$window.alert("Inserisci del testo!");
 			}
-			let response = await $http.post("/api/card", card);
-			if (response.status !== 200) {
-				$window.alert(response.data.error);
-			} else {
+			try {
+				await $http.post("/api/card", card);
 				await getCards();
+			} catch (err) {
+				$window.alert(err.data.error);
 			}
 		};
 
@@ -32,6 +32,7 @@ angular.module("app", [])
 				text: $scope.whiteText,
 				isBlack: false
 			};
+			$scope.whiteText = "";
 			await sendCard(card);
 		};
 
@@ -40,16 +41,17 @@ angular.module("app", [])
 				text: $scope.blackText,
 				isBlack: true
 			};
+			$scope.blackText = "";
 			await sendCard(card);
 		};
 
 
 		$scope.deleteCard = async function(card) {
-			let response = await $http.delete("/api/card/?uuid=" + card.uuid);
-			if (response.status !== 200) {
-				$window.alert(response.data.error);
-			} else {
+			try {
+				await $http.delete("/api/card/?uuid=" + card.uuid);
 				await getCards();
+			} catch (err) {
+				$window.alert(err.data.error);
 			}
 		};
 
