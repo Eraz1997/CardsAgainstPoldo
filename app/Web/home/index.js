@@ -8,11 +8,13 @@ angular.module("app", [])
 			"Luca o m o s e s s u a l e",
 			"HAI SUPPOSTO!",
 			"GUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU",
-			"Dov'è Bugo?",
+			"Le brutte intenzioni, la maleducazione, la tua brutta figura di ieri sera, la tua ingratitudine, la tua arroganza, fai ciò che vuoi mettendo i piedi in testa. Certo il disordine è una forma d’arte, ma tu sai solo coltivare invidia. Ringrazia il cielo sei su questo palco, rispetta chi ti ci ha portato dentro. Ma questo sono io.",
 			"Il rock è la musica migliore del mondo",
 			"Mi sento mancare",
 			"Puledri!",
-			"Ooof"
+			"Comunque meno buggato dei giochi di Alessio",
+			"Ooof",
+			"Scandalo della ragione"
 		];
 		$scope.subtitle = subtitleArray[Math.floor(Math.random() * subtitleArray.length)];
 
@@ -22,10 +24,9 @@ angular.module("app", [])
 		$scope.master = null;
 		$scope.players = [];
 		$scope.playerJoined = false;
-		$scope.nickBoxDisabled = false;
+		$scope.nickInputDisabled = false;
 
 		async function polling() {
-
 			try {
 				let getUsers = await $http.get("/api/users");
 				$scope.playerErr = "";
@@ -36,6 +37,7 @@ angular.module("app", [])
 					return user.isMaster;
 				})[0].nickname : "";
 			} catch (err) {
+				console.log(err);
 				$scope.playersErr = err.data.error;
 			}
 
@@ -43,15 +45,16 @@ angular.module("app", [])
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
 					if (getGameStarted.data.started) {
-						$window.location.replace("/game!#?nickname=" + $scope.nickname);
+						$window.location.replace("/game/#!?nickname=" + $scope.nickname);
 					}
 				} catch (err) {
+					console.log(err);
 					$scope.playersErr = err.data.error;
 				}
 			}
 		}
 		await polling();
-		await $interval(polling, 1000);
+		$interval(polling, 1000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo
@@ -64,7 +67,7 @@ angular.module("app", [])
 					console.log($scope.nickInputForm.$error);
 				}
 			} else {
-				$scope.nickBoxDisabled = true;
+				$scope.nickInputDisabled = true;
 				try {
 					await $http.post("/api/user", {
 						userNickname: $scope.nickname
@@ -72,8 +75,9 @@ angular.module("app", [])
 					$scope.nickErr = "";
 					$scope.playerJoined = true;
 				} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
+					console.log(err);
 					$scope.nickErr = err.data.error;
-					$scope.nickBoxDisabled = false;
+					$scope.nickInputDisabled = false;
 				}
 			}
 		};
@@ -83,8 +87,9 @@ angular.module("app", [])
 				await $http.delete("/api/user?userNickname=" + $scope.nickname);
 				$scope.nickErr = "";
 				$scope.playerJoined = false;
-				$scope.nickBoxDisabled = false;
+				$scope.nickInputDisabled = false;
 			} catch (err) {
+				console.log(err);
 				$scope.nickErr = err.data.error;
 			}
 		};
@@ -94,8 +99,9 @@ angular.module("app", [])
 				await $http.post("/api/game", {
 					userNickname: $scope.nickname
 				});
-				$window.location.replace("/game!#?nickname=" + $scope.nickname);
+				$window.location.replace("/game/#!?nickname=" + $scope.nickname);
 			} catch (err) {
+				console.log(err);
 				$scope.nickErr = err.data.error;
 			}
 		};

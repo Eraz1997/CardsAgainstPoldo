@@ -28,16 +28,17 @@
             name="textbox"
             ng-model="nickname"
             ng-maxlength=20
+            ng-disabled="nickInputDisabled"
             autocomplete="off"/>
-          <input type="submit"
+          <input type="button"
             value="Entra"
+            ng-disabled="nickInputDisabled"
             ng-click="enterButton_onClick()"/>
         </form>
         <form class="playerJoined">
           <input type="button"
             value="Inizia partita"
             ng-click="startButton_onClick()"
-            ng-disabled="nickBoxDisabled"
             ng-show="playerJoined && nickname == master && players.length >= 2"/>
           <input type="button"
             value="Esci"
