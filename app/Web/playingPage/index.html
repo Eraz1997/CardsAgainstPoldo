@@ -25,7 +25,63 @@
 
       <div class="game"
           ng-if="gameStarted">
-
+        <div class="turn-winner-card-container"
+            ng-if="watchingTurnWinner">
+          <div class="turn-winner-card">
+            {{turnWinnerCard.fullText}}
+          </div>
+          <div class="next-turn-button"
+              ng-click="nextTurn()">
+            Bella merda, continuiamo!
+          </div>
+        </div>
+        <div class="black-card"
+            ng-if="!watchingTurnWinner && !watchingPlayerResponses">
+          {{blackCard.text}}
+        </div>
+        <div class="black-card"
+            ng-if="watchingPlayerResponses">
+          {{currentResponse.fullText}}
+        </div>
+        <div class="choose-best-response-container"
+            ng-if="watchingPlayerResponses">
+          <div class="choose-best-button"
+              ng-disabled="currentResponse.index === 0"
+              ng-class="currentResponse.index === 0 ? 'disabled' : ''"
+              ng-click="changeCurrentResponse(currentResponse.index - 1)">
+            Precedente
+          </div>
+          <div class="choose-best-button validate"
+              ng-click="confirmBestResponse(currentResponse.index)">
+            Questa è la migliore!
+          </div>
+          <div class="choose-best-button"
+              ng-disabled="currentResponse.index === responses.length - 1"
+              ng-class="currentResponse.index === responses.length - 1 ? 'disabled' : ''"
+              ng-click="changeCurrentResponse(currentResponse.index + 1)">
+            Successivo
+          </div>
+        </div>
+        <div class="my-cards"
+            ng-if="!watchingTurnWinner && !player.response && !player.isMaster">
+          <div class="my-card"
+              ng-repeat="card in player.cards">
+            {{card.text}}
+          </div>
+        </div>
+        <div class="waiting-for-turn-winner"
+            ng-if="player.response">
+          <span> Ottimo! Ora aspetta che anche gli altri decidano la propria risposta</span>
+        </div>
+        <div class="waiting-for-turn-winner"
+            ng-if="player.isMaster">
+          <span> Sei il master, aspetta che tutti sti cafoni rispondano</span>
+        </div>
+        <div class="options">
+          <span class="divider"></span>
+          <span class="exit-button"
+              ng-click="leaveGame()"><span>Esci dalla partita</span></span>
+        </div>
       </div>
 
     </div>

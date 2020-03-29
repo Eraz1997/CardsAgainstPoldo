@@ -22,6 +22,7 @@ html {
       height: 100%;
       position: relative;
       color: white;
+      user-select: none;
 
       h1 {
         line-height: 0.5vw;
@@ -63,8 +64,151 @@ html {
         display: flex;
         flex-direction: column;
         width: 100%;
-        align-items: center;
-        justify-content: center;
+
+        .turn-winner-card-container {
+          .turn-winner-card {
+            border-style: solid;
+            border-width: 4px;
+            border-color: white;
+            border-radius: 12px;
+            width: 80%;
+            flex: 0 0 200px;
+            font-size: 4vw;
+          }
+
+          .next-turn-button {
+            margin-top: 50px;
+            border-radius: 12px;
+            background-color: green;
+            width: 50%;
+            flex: 0 0 100px;
+            font-size: 4vw;
+          }
+        }
+
+        .choose-best-card-container {
+          width: 70%;
+          flex: 0 0 100px;
+          margin-top: 20px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .choose-best-button {
+            background-color: darken(white, 10%);
+            color: black;
+            flex: 1;
+            height: 100%;
+            border-radius: 12px;
+            padding: 10px;
+
+            &:hover {
+              background-color: darken(white, 20%);
+            }
+
+            &:active {
+              background-color: darken(white, 25%);
+            }
+
+            &.validate {
+              background-color: darken(green, 10%);
+
+              &:hover {
+                background-color: darken(green, 10%);
+              }
+
+              &:active {
+                background-color: darken(green, 20%);
+              }
+            }
+          }
+        }
+
+        .black-card {
+          border-style: solid;
+          border-width: 4px;
+          border-color: white;
+          border-radius: 12px;
+          width: 80%;
+          flex: 0 0 200px;
+          font-size: 4vw;
+        }
+
+        .my-cards {
+          flex: 1;
+          padding: 20px;
+          display: flex;
+          flex-direction: row;
+          overflow-x: scroll;
+
+          .card {
+            border-radius: 12px;
+            height: 100%;
+            background-color: white;
+            color: black;
+            flex: 0 0 100px;
+            font-size: 12px;
+
+            &:hover {
+              background-color: darken(white, 10%);
+            }
+
+            &:active {
+              background-color: darken(white, 20%);
+            }
+          }
+        }
+
+        .waiting-for-turn-winner {
+          display: flex;
+          width: 90%;
+          padding: 20px;
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+
+          span {
+            font-size: 6vw;
+            flex: 0 0 content;
+            max-width: 100%;
+            word-wrap: break-word;
+          }
+        }
+
+        .options {
+          flex: 0 0 50px;
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          padding: 5px;
+
+          .divider {
+            flex: 1;
+          }
+
+          .exit-button {
+            background-color: red;
+            color: white;
+            height: 80%;
+            margin-right: 20px;
+            border-radius: 6px;
+            flex: 0 0 content;
+            padding: 5px;
+            word-wrap: break-word;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            cursor: pointer;
+
+            &:hover {
+              background-color: darken(red, 20%);
+            }
+
+            &:active {
+              background-color: darken(red, 30%);
+            }
+          }
+        }
       }
     }
   }
