@@ -5,7 +5,7 @@ module.exports = async function(request, response) {
 	try {
 		await dbManager.connect();
 		let games = await dbManager.models.games.select({});
-		if (!games.length || !games[0].turnWinner || !games[0].turnWinnerCard || !games[0].currentBlackCard) {
+		if (!games.length || !games[0].turnWinner || !games[0].turnWinnerCards || !games[0].currentBlackCard) {
 			throw "Nessun turno è stato ancora giocato";
 		}
 		let winner = await dbManager.models.users.select({
@@ -14,11 +14,11 @@ module.exports = async function(request, response) {
 		if (!winner) {
 			throw "Giocatore non trovato";
 		}
-		let winnerCard = await dbManager.models.cards.select({
-			uuid: games[0].turnWinnerCard,
+		let winnerCards = await dbManager.models.cards.select({
+			uuid: games[0].turnWinnerCards,
 			isBlack: false
 		});
-		if (!winnerCard) {
+		if (!winnerCards) {
 			throw "Carta non trovata";
 		}
 		let scoreboard = await dbManager.models.users.select({}, ["nickname", "points"], "points", "DESC");
@@ -27,7 +27,7 @@ module.exports = async function(request, response) {
 		response.status(200).send({
 			winner: winner,
 			blackCard: games[0].currentBlackCard,
-			winnerCard: winnerCard,
+			winnerCards: winnerCards,
 			scoreboard: scoreboard
 		});
 

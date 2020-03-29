@@ -14,7 +14,8 @@ Schemas.user = new Schema({
 	},
 	cards: [String],
 	points: Number,
-	isMaster: Boolean
+	isMaster: Boolean,
+	response: [String]
 });
 
 Schemas.card = new Schema({
@@ -38,7 +39,7 @@ Schemas.game = new Schema({
 	isStarted: Boolean,
 	isEnded: Boolean,
 	turnWinner: String,
-	turnWinnerCard: String,
+	turnWinnerCards: [String],
 	currentBlackCard: String
 });
 
