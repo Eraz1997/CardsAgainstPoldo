@@ -20,14 +20,14 @@ module.exports = async function(request, response) {
 		}
 
 		if (isMaster) {
-			let whiteDeck = await dbManager.models.cards.select({
+			let whiteDeck = (await dbManager.models.cards.select({
 				isBlack: false
-			}).map(function(item) {
+			})).map(function(item) {
 				return item.uuid;
 			});
-			let blackDeck = await dbManager.models.cards.select({
+			let blackDeck = (await dbManager.models.cards.select({
 				isBlack: true
-			}).map(function(item) {
+			})).map(function(item) {
 				return item.uuid;
 			});
 			whiteDeck.sort(function() {
@@ -38,7 +38,7 @@ module.exports = async function(request, response) {
 			});
 			cards = whiteDeck.splice(0, 10);
 			//console.log(cards);
-			await dbManager.models.games.delete({});
+			await dbManager.models.games.destroy({});
 			await dbManager.models.games.create({
 				whiteDeck: whiteDeck,
 				blackDeck: blackDeck,
