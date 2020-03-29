@@ -4,6 +4,7 @@ module.exports = {
 
 	"GET/deck": "deck",
 	"GET/gameStarted": "gameStarted",
+	"GET/gameEnded": "gameEnded",
 	"GET/winner": "winner",
 	"GET/users": "users",
 	"GET/blackCard": "blackCard",
