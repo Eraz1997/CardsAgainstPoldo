@@ -10,6 +10,7 @@ module.exports = {
 	"GET/cards": "cards",
 	"POST/card": "card",
 	"POST/game": "game",
+	"POST/user": "user",
 	"POST/turnWinner": "turnWinner",
 	"DELETE/card": "card",
 	"DELETE/game": "game"
