@@ -14,5 +14,6 @@ module.exports = {
 	"POST/user": "user",
 	"POST/turnWinner": "turnWinner",
 	"DELETE/card": "card",
-	"DELETE/game": "game"
+	"DELETE/game": "game",
+	"DELETE/user": "user"
 };
