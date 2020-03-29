@@ -24,6 +24,16 @@ module.exports = async function(request, response) {
 			throw "Il master non può giocare carte bianche";
 		}
 
+		await user.cards.map(async function(card) {
+			let fullCard = await connection.models.cards.select({
+				uuid: card
+			});
+			if (!fullCard.length) {
+				throw "Carte non trovate";
+			}
+			return fullCard[0];
+		});
+
 		await connection.closeConnection();
 
 		response.status(200).send(user.cards);

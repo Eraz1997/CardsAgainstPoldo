@@ -15,9 +15,11 @@ module.exports = async function(request, response) {
 		if (!winner) {
 			throw "Giocatore non trovato";
 		}
-		let winnerCards = await connection.models.cards.select({
-			uuid: games[0].turnWinnerCards,
-			isBlack: false
+		let winnerCards = games[0].turnWinnerCards.map(async function(card) {
+			return await connection.models.cards.select({
+				uuid: card,
+				isBlack: false
+			});
 		});
 		if (!winnerCards) {
 			throw "Carta non trovata";
@@ -27,7 +29,6 @@ module.exports = async function(request, response) {
 
 		response.status(200).send({
 			winner: winner,
-			blackCard: games[0].currentBlackCard,
 			winnerCards: winnerCards,
 			scoreboard: scoreboard
 		});

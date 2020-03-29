@@ -28,7 +28,7 @@
         <div class="turn-winner-card-container"
             ng-if="watchingTurnWinner">
           <div class="turn-winner-card">
-            {{turnWinnerCard.fullText}}
+            {{turnWinnerCard.turnWinner.nickname}} ha scritto: {{turnWinnerCard.fullText}}
           </div>
           <div class="next-turn-button"
               ng-click="nextTurn()">
@@ -63,9 +63,10 @@
           </div>
         </div>
         <div class="my-cards"
-            ng-if="!watchingTurnWinner && !player.response && !player.isMaster">
+            ng-if="!watchingTurnWinner && !responseSent && !player.isMaster">
           <div class="my-card"
-              ng-repeat="card in player.cards">
+              ng-repeat="card in player.cards"
+              ng-click="chooseResponse(card)">
             {{card.text}}
           </div>
         </div>

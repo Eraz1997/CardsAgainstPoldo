@@ -5,16 +5,22 @@ module.exports = async function(request, response) {
 	let connection;
 	try {
 		connection = await dbManager.connect();
-		let blackCard = await connection.models.games.select({});
+		let games = await connection.models.games.select({});
 
-		if (!blackCard.length) {
+		if (!games.length) {
 			throw "Nessun game presente!";
 		}
-		if (!blackCard[0].currentBlackCard) {
+		if (!games[0].currentBlackCard) {
 			throw "Carta vuota!";
 		}
+		let blackCard = await connection.models.cards.select({
+			uuid: games[0].currentBlackCard
+		});
+		if (!blackCard.length) {
+			throw "Carta non trovata";
+		}
 		await connection.closeConnection();
-		response.status(200).send(blackCard[0].currentBlackCard);
+		response.status(200).send(blackCard);
 	} catch (err) {
 		console.log(err);
 		await connection.closeConnection();
