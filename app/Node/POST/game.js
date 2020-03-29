@@ -16,6 +16,7 @@ module.exports = async function(request, response) {
 		if (!user.length) {
 			throw "Giocatore non trovato";
 		}
+		user = user[0];
 		if (!user.isMaster) {
 			throw "Solo il master può far partire il gioco";
 		}
