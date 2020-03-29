@@ -2,8 +2,6 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
-	let success = false;
-	let error = "";
 
 	try {
 
@@ -88,16 +86,11 @@ module.exports = async function(request, response) {
 		});
 
 		await dbManager.close();
-		success = true;
-
+		response.status(200).send({});
 	} catch (err) {
-		console.log(err);
 		dbManager.close();
-		error = err;
+		response.status(400).send({
+			error: err
+		});
 	}
-
-	response.status(200).send({
-		success: success,
-		error: error
-	});
 };

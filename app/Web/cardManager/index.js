@@ -4,6 +4,10 @@ angular.module("app", [])
 
 		let getCards = async function() {
 			let cards = await $http.get("/api/deck");
+			if (cards.status !== 200) {
+				$window.alert(cards.data.error);
+				return;
+			}
 			$scope.whiteDeck = cards.data.whiteDeck;
 			$scope.blackDeck = cards.data.blackDeck;
 			$scope.$digest();
@@ -15,9 +19,9 @@ angular.module("app", [])
 			if (!card.text || card.text === "") {
 				$window.alert("Inserisci del testo!");
 			}
-			let response = (await $http.post("/api/card", card)).data;
-			if (!response.success) {
-				$window.alert(response.error);
+			let response = await $http.post("/api/card", card);
+			if (response.status !== 200) {
+				$window.alert(response.data.error);
 			} else {
 				await getCards();
 			}
@@ -41,10 +45,9 @@ angular.module("app", [])
 
 
 		$scope.deleteCard = async function(card) {
-			let response = (await $http.delete("/api/card/?uuid=" + card.uuid)).data;
-			console.log(response);
-			if (!response.success) {
-				$window.alert(response.error);
+			let response = await $http.delete("/api/card/?uuid=" + card.uuid);
+			if (response.status !== 200) {
+				$window.alert(response.data.error);
 			} else {
 				await getCards();
 			}
