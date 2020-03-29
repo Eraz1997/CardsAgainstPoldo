@@ -28,10 +28,8 @@ module.exports = async function(request, response) {
 		response.status(200).send(user.cards);
 
 	} catch (err) {
-		console.log(err);
 		dbManager.close();
-
-		response.status(200).send({
+		response.status(400).send({
 			error: err
 		});
 	}

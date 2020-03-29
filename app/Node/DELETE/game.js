@@ -2,8 +2,7 @@
 const dbManager = require("../../Globals/dbManager.js");
 
 module.exports = async function(request, response) {
-	let success = false;
-	let error = "";
+
 	try {
 		let userNickname = request.query.userNickname;
 
@@ -20,7 +19,6 @@ module.exports = async function(request, response) {
 
 		let games = await dbManager.models.games.select({});
 		if (!games.length) {
-			success = true;
 			throw "Partita già chiusa";
 		}
 		let game = games[0];
@@ -30,16 +28,12 @@ module.exports = async function(request, response) {
 		await dbManager.models.games.destroy({});
 		await dbManager.models.users.destroy({});
 		await dbManager.close();
-		success = true;
 
+		response.status(200).send({});
 	} catch (err) {
-		console.log(err);
 		dbManager.close();
-		error = err;
+		response.status(400).send({
+			error: err
+		});
 	}
-
-	response.status(200).send({
-		success: success,
-		error: error
-	});
 };
