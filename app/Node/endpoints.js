@@ -7,6 +7,7 @@ module.exports = {
 	"GET/winner": "winner",
 	"GET/users": "users",
 	"GET/responses": "responses",
+	"GET/cards": "cards",
 	"POST/card": "card",
 	"POST/game": "game",
 	"POST/turnWinner": "turnWinner",
