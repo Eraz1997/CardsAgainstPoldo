@@ -13,8 +13,10 @@
   <body>
     <div ng-controller="controller as app">
       <div class="content">
+
         <h1>Cards Against Poldo</h1>
         <h2>{{subtitle}}</h2>
+
         <p class="errorMsg">{{nickErr}}</p>
         <form class="nickInput"
           name="nickInputForm"
@@ -26,7 +28,7 @@
             name="textbox"
             ng-model="nickname"
             ng-maxlength=20
-            autocomplete="on"/>
+            autocomplete="off"/>
           <input type="submit"
             value="Entra"
             ng-click="enterButton_onClick()"/>
@@ -35,12 +37,14 @@
           <input type="button"
             value="Inizia partita"
             ng-click="startButton_onClick()"
-            ng-show="playerJoined && playerNickname == master && players.length >= 2"/>
+            ng-disabled="nickBoxDisabled"
+            ng-show="playerJoined && nickname == master && players.length >= 2"/>
           <input type="button"
             value="Esci"
             ng-click="exitButton_onClick()"
             ng-show="playerJoined"/>
         </form>
+
         <div>
           <p ng-show="players.length > 0">
             Giocatori connessi:
@@ -61,11 +65,14 @@
             </p>
           </div>
         </div>
+        <p class="errorMsg">{{playersErr}}</p>
+
         <div class="footer">
           <a href="/cardManager" class="footer">
             Gestisci carte
           </a>
         </div>
+
       </div>
     </div>
   </body>
