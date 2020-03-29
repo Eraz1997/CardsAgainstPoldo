@@ -1,0 +1,36 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+  <script src="index.js"></script>
+  <link rel="stylesheet/less"
+      href="index.less"
+      type="text/css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
+</head>
+
+<body>
+  <div ng-controller="controller as app">
+    <div class="content">
+      <h1 ng-if="player.isMaster">{{player.nickname}} &#9733;</h1>
+      <h1 ng-if="!player.isMaster">{{player.nickname}}</h1>
+      <h2> Punti: {{player.points}}</h2>
+
+      <div class="no-game-element"
+          ng-if="!gameStarted">
+        <span>
+          COSA CI FAI QUI BRUTTO CAFONE! NESSUNO STA GIOCANDO!</span>
+      </div>
+
+      <div class="game"
+          ng-if="gameStarted">
+
+      </div>
+
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>

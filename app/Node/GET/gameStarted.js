@@ -5,7 +5,7 @@ module.exports = async function(request, response) {
 	try {
 		await dbManager.connect();
 		let games = await dbManager.models.games.select({});
-		let result = !!(games.length && games[0].isStarted);
+		let result = !!(games.length && games[0].isStarted && !games[0].isEnded);
 		await dbManager.close();
 
 		response.status(200).send({
