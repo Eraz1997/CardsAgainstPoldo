@@ -14,6 +14,12 @@ module.exports = async function(request, response) {
 		await dbManager.connect();
 
 		//await dbManager.models.users.destroy({}); //PER RIPULIRE IL DATABASE IN FASE DI TEST
+		let existingUser = await dbManager.models.users.select({
+			nickname: nick
+		});
+		if (existingUser.length) {
+			throw "Nickname già usato";
+		}
 		let checkMaster = await dbManager.models.users.select({}, ["nickname"]);
 		if (checkMaster.length === 0) {
 			isMaster = true;

@@ -17,6 +17,7 @@ module.exports = async function(request, response) {
 		if (!user.length) {
 			throw "Giocatore non trovato";
 		}
+		user = user[0];
 		let otherUsers = await dbManager.models.users.select({
 			nickname: {
 				$ne: userNickname
