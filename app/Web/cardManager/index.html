@@ -17,7 +17,7 @@
       <div class="editor">
         <div class="panel-container">
           <div class="panel white">
-            
+
             <div class="list">
               <div class="card white" ng-repeat="card in whiteDeck">
                 {{card.text}}
@@ -30,7 +30,7 @@
             <textarea class="textbox" ng-model="whiteText" ></textarea>
             <input type="button" class="send-button" ng-click="sendWhite()"  value="Crea nuova carta bianca!"/>
             </div>
-            
+
           </div>
           <div class="panel black">
             <div class="list">
@@ -40,27 +40,29 @@
                   <span>Elimina</span>
                 </div>
               </div>
-              
+
             </div>
             <div class="controls">
             <textarea class="textbox" ng-model="blackText"></textarea>
             <input type="button" class="send-button" ng-click="sendBlack()" value="Crea nuova carta nera!" />
             </div>
-            
+
           </div>
 
           </div>
         </div>
         <div class="footer">
-          <a href="/home">
+          <a class="footerElement" href="/home">
             Home
           </a>
+          <label class="footerElement" for="deckFile">Carica un file di testo:</label>
+          <input class="footerElement" type="file" id="deckFile" name="deckFile" accept=".txt" on-read-file="sendDeck($fileContent)" />
           <span></span>
         </div>
-        
+
       </div>
-    </div> 
-  </div> 
+    </div>
+  </div>
 </body>
 
 </html>
