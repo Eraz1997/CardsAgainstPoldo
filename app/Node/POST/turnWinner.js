@@ -30,6 +30,7 @@ module.exports = async function(request, response) {
 		if (!turnWinner.length) {
 			throw "Carte non trovate";
 		}
+		turnWinner = turnWinner[0];
 
 		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isStarted) {
@@ -49,7 +50,7 @@ module.exports = async function(request, response) {
 			let newBlackCard = blackCards[0];
 			blackCards.shift();
 
-			await players.map(async function(player) {
+			for (let player of players) {
 				player.cards = player.cards.concat(whiteCards.splice(0, cardUUIDs.length));
 				await connection.models.users.modify({
 					nickname: player.nickname
@@ -57,14 +58,15 @@ module.exports = async function(request, response) {
 					cards: player.cards,
 					response: null
 				});
-			});
+			}
 
 			await connection.models.games.modify({}, {
 				currentBlackCard: newBlackCard,
 				turnWinner: turnWinner.nickname,
-				turnWinnerCard: cardUUIDs,
+				turnWinnerCards: cardUUIDs,
 				blackDeck: blackCards,
-				whiteDeck: whiteCards
+				whiteDeck: whiteCards,
+				turn: games[0].turn + 1
 			});
 
 		} else {

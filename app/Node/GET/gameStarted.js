@@ -6,7 +6,7 @@ module.exports = async function(request, response) {
 	try {
 		connection = await dbManager.connect();
 		let games = await connection.models.games.select({});
-		let result = !!(games.length && games[0].isStarted && !games[0].isEnded);
+		let result = !!(games.length && games[0].isStarted);
 		await connection.closeConnection();
 
 		response.status(200).send({

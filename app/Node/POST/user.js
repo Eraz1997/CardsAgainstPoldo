@@ -26,6 +26,11 @@ module.exports = async function(request, response) {
 			isMaster = true;
 		}
 
+		let games = await connection.models.users.select({}, ["isEnded"]);
+		if (games.length && games[0].isEnded) {
+			throw "Aspetta che la partita precedente venga chiusa";
+		}
+
 		if (isMaster) {
 			let whiteDeck = (await connection.models.cards.select({
 				isBlack: false

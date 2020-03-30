@@ -42,8 +42,10 @@ angular.module("app", [])
 					$scope.nickInputDisabled = false;
 				}
 			} catch (err) {
-				console.log(err);
-				$scope.playersErr = err.data.error;
+				if (err.status !== -1) {
+					console.log(err);
+					$scope.playersErr = err.data.error;
+				}
 			}
 
 			if ($scope.playerJoined) {
