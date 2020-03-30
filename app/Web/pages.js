@@ -4,4 +4,5 @@ module.exports = {
 	"home": "home",
 	"game": "playingPage",
 	"cardManager": "cardManager"
+	"leaderboard": "leaderboard"
 };

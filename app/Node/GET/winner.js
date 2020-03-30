@@ -13,11 +13,20 @@ module.exports = async function(request, response) {
 		if (!users.length) {
 			throw "Nessun giocatore trovato";
 		}
-		let winner = users.reduce(function(best, current) {
+
+		users.sort(function (a, b) {
+			return b.points - a.points;
+		});
+		
+
+			let winner = users.reduce(function(best, current) {
 			if (best === null || current.points > best.points) {
 				return current;
+			}else{
+				return best;
 			}
 		}, null);
+
 		await connection.closeConnection();
 
 		response.status(200).send({
