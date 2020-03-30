@@ -39,7 +39,7 @@
           <input type="button"
             value="Inizia partita"
             ng-click="startButton_onClick()"
-            ng-show="playerJoined && nickname == master && players.length >= 2"/>
+            ng-show="playerJoined && nickname === master && players.length >= 2"/>
           <input type="button"
             value="Esci"
             ng-click="exitButton_onClick()"
@@ -50,20 +50,27 @@
           <p ng-show="players.length > 0">
             Giocatori connessi:
           </p>
-          <p ng-show="players.length == 0">
+          <p ng-show="players.length === 0">
             Nessun giocatore connesso
           </p>
           <div class="playerList"
             ng-show="players.length > 0">
-            <p class="player master"
-              ng-show="master != null">
-              {{master}} &#9733;
-            </p>
-            <p class="player"
-              ng-repeat="player in players"
-              ng-show="player != master">
-              {{player}}
-            </p>
+            <div class="player"
+              ng-repeat="player in players">
+              <p class="name master"
+                ng-show="player === master">
+                {{player}} &#9733;
+              </p>
+              <p class="name"
+                ng-show="player !== master">
+                {{player}}
+              </p>
+              <input class="removeButton"
+                type="button"
+                value="Rimuovi"
+                ng-show="playerJoined && nickname === master && player !== nickname"
+                ng-click="removeButton_onClick(player)"/>
+            </div>
           </div>
         </div>
         <p class="errorMsg">{{playersErr}}</p>

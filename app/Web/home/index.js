@@ -14,7 +14,8 @@ angular.module("app", [])
 			"Puledri!",
 			"Comunque meno buggato dei giochi di Alessio",
 			"Ooof",
-			"Scandalo della ragione"
+			"Scandalo della ragione",
+			"Ci son cascato di nuovo"
 		];
 		$scope.subtitle = subtitleArray[Math.floor(Math.random() * subtitleArray.length)];
 
@@ -36,6 +37,10 @@ angular.module("app", [])
 				$scope.master = $scope.players.length ? getUsers.data.users.filter(function(user) {
 					return user.isMaster;
 				})[0].nickname : "";
+				if (!$scope.players.includes($scope.nickname)) {
+					$scope.playerJoined = false;
+					$scope.nickInputDisabled = false;
+				}
 			} catch (err) {
 				console.log(err);
 				$scope.playersErr = err.data.error;
@@ -100,6 +105,16 @@ angular.module("app", [])
 					userNickname: $scope.nickname
 				});
 				$window.location.replace("/game/#!?nickname=" + $scope.nickname);
+			} catch (err) {
+				console.log(err);
+				$scope.nickErr = err.data.error;
+			}
+		};
+
+		$scope.removeButton_onClick = async function(player) {
+			try {
+				await $http.delete("/api/user?userNickname=" + player);
+				$scope.nickErr = "";
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
