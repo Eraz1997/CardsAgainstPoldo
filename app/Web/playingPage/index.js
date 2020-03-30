@@ -52,7 +52,7 @@ angular.module("app", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard");
+					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
@@ -74,7 +74,7 @@ angular.module("app", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard");
+					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
 				}
 				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
 				let blackCard = (await $http.get("/api/blackCard")).data;

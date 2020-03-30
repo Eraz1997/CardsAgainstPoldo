@@ -1,4 +1,6 @@
-html, body, .ng-scope {
+.ng-scope,
+body,
+html {
   background-color: #000000;
   height: 100%;
 }
@@ -8,7 +10,6 @@ html, body, .ng-scope {
   flex-direction: column;
   align-items: center;
   height: 100%;
-
 
   h1 {
     line-height: 0.5vw;
@@ -30,18 +31,18 @@ html, body, .ng-scope {
     color: #ffffff;
   }
 
-  table{
-    width: 35%
+  table {
+    width: 35%;
   }
 
-  .winner{
+  .winner {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 40px;
     font-weight: bold;
     color: #ffffff;
   }
 
-  .score{
+  .score {
     text-align: right;
   }
 
@@ -59,9 +60,13 @@ html, body, .ng-scope {
     text-align: center;
     bottom: 10px;
     color: #ffffff;
+
+    & a {
+      cursor: pointer;
+    }
   }
 
-  .footerDivider{
-    flex: 1
+  .footerDivider {
+    flex: 1;
   }
 }
