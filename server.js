@@ -14,6 +14,11 @@ async function serverMain() {
 	console.log("[+] Connect to database");
 	await dbManager.init();
 
+	console.log("[+] Link middlewares");
+	app.use(function(req, res, next) {
+		console.log("[!] Request at " + req.url + " from " + (req.headers['x-forwarded-for'] || req.connection.remoteAddress));
+		next();
+	});
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
 		extended: true

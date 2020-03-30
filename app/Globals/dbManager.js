@@ -46,15 +46,22 @@ var destroyFunctionFactory = function(model) {
 
 let closeConnectionFunctionFactory = function(connection) {
 	return async function() {
-		await connection.removeAllListeners();
-		await connection.close();
+		if (!connection || !connection.db) {
+			return;
+		}
+		try {
+			await connection.db.removeAllListeners();
+			await connection.db.close();
+		} catch (err) {
+			console.log(err);
+		}
 	};
 };
 
 dbManager.getModels = async function(connection) {
 	connection.models = {};
 	for (let key of Object.keys(Schemas)) {
-		connection.models[key + "s"] = await mongoose.model(key, Schemas[key]);
+		connection.models[key + "s"] = await connection.db.model(key, Schemas[key]);
 		connection.models[key + "s"].create = createFunctionFactory(connection.models[key + "s"]);
 		connection.models[key + "s"].select = selectFunctionFactory(connection.models[key + "s"]);
 		connection.models[key + "s"].modify = modifyFunctionFactory(connection.models[key + "s"]);
@@ -63,13 +70,13 @@ dbManager.getModels = async function(connection) {
 };
 
 dbManager.connect = async function() {
-	await mongoose.connect(dbManager.databaseURL, {
+	let connection = {};
+	connection.db = await mongoose.createConnection(dbManager.databaseURL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true
 	});
-	let connection = mongoose.connection;
-	connection.on('error', console.error.bind(console, 'MongoDB error:'));
+	connection.db.on('error', console.error.bind(console, 'MongoDB error:'));
 	await dbManager.getModels(connection);
 	connection.closeConnection = closeConnectionFunctionFactory(connection);
 	return connection;

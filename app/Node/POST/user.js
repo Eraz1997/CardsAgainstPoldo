@@ -43,6 +43,14 @@ module.exports = async function(request, response) {
 			blackDeck.sort(function() {
 				return 0.5 - Math.random();
 			});
+			if (!blackDeck.length) {
+				throw "Carte nere non sufficienti per iniziare una partita";
+			}
+			if (whiteDeck.length < 10) {
+				throw "Carte bianche non sufficienti per inserirti nella partita";
+			}
+			let currentBlackCard = blackDeck[0];
+			blackDeck.shift();
 			cards = whiteDeck.splice(0, 10);
 			//console.log(cards);
 			await connection.models.games.destroy({});
@@ -53,7 +61,7 @@ module.exports = async function(request, response) {
 				isEnded: false,
 				turnWinner: null,
 				turnWinnerCards: null,
-				currentBlackCard: null
+				currentBlackCard: currentBlackCard
 			});
 		} else {
 			let games = await connection.models.games.select({});

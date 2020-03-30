@@ -11,9 +11,8 @@ angular.module("app", [])
 			//check game started
 			try {
 				$scope.gameStarted = (await $http.get("/api/gameStarted")).data.started;
-				console.log($scope.gameStarted);
 			} catch (err) {
-				$window.alert(err);
+				$window.alert(err.data.error);
 			}
 			if (!$scope.gameStarted) {
 				$scope.$digest();
@@ -22,12 +21,16 @@ angular.module("app", [])
 
 			// get black card
 			try {
-				$scope.player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
+				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
 				$scope.blackCard = (await $http.get("/api/blackCard")).data;
-				$scope.player.cards = (await $http.get("/api/cards?userNickname=" + $scope.player.nickname)).data;
+				player.cards = [];
+				if (!player.isMaster) {
+					player.cards = (await $http.get("/api/cards?userNickname=" + player.nickname)).data;
+				}
+				$scope.player = player;
 
 			} catch (err) {
-				$window.alert(err);
+				$window.alert(err.data.error);
 			}
 			$scope.watchingTurnWinner = false;
 			$scope.watchingPlayerResponses = false;
@@ -42,7 +45,7 @@ angular.module("app", [])
 				await $http.delete("/api/user?userNickname=" + $scope.player.nickname);
 				$window.location.replace("/home");
 			} catch (err) {
-				$window.alert(err);
+				$window.alert(err.data.error);
 			}
 		};
 
@@ -71,9 +74,10 @@ angular.module("app", [])
 					$scope.watchingTurnWinner = true;
 				}
 			} catch (err) {
-				$window.alert(err);
+				$window.alert(err.data.error);
 			}
-		}
+			$scope.$digest();
+		};
 
 		$scope.chooseResponse = async function(card) {
 			$scope.player.response.push(card);
@@ -87,10 +91,9 @@ angular.module("app", [])
 						cards: $scope.player.response
 					});
 					$scope.player.response = [];
-					$scope.responseSent = true;
 					startCheckingTurnWinner();
 				} catch (err) {
-					$window.alert(err);
+					$window.alert(err.data.error);
 				}
 			}
 

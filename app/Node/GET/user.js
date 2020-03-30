@@ -7,16 +7,14 @@ module.exports = async function(request, response) {
 		let userNickname = request.query.userNickname;
 		connection = await dbManager.connect();
 		let users = await connection.models.users.select({
-			userNickname
+			nickname: userNickname
 		}, ["nickname", "points", "isMaster"]);
 		if (!users.length) {
 			throw "Utente non trovato";
 		}
 		await connection.closeConnection();
 
-		response.status(200).send({
-			users: users[0]
-		});
+		response.status(200).send(users[0]);
 
 	} catch (err) {
 		console.log(err);

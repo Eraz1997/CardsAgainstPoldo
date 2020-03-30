@@ -20,23 +20,25 @@ module.exports = async function(request, response) {
 		if (!user) {
 			throw "Utente non trovato";
 		}
+		user = user[0];
 		if (user.isMaster) {
 			throw "Il master non può giocare carte bianche";
 		}
 
-		await user.cards.map(async function(card) {
+		let fullCards = [];
+		for (let card of user.cards) {
 			let fullCard = await connection.models.cards.select({
 				uuid: card
 			});
 			if (!fullCard.length) {
 				throw "Carte non trovate";
 			}
-			return fullCard[0];
-		});
+			fullCards.push(fullCard[0]);
+		}
 
 		await connection.closeConnection();
 
-		response.status(200).send(user.cards);
+		response.status(200).send(fullCards);
 
 	} catch (err) {
 		console.log(err);
