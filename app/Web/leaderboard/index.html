@@ -34,16 +34,16 @@
         <tr>
           <td>
             <p class=otherPlayers
-                ng-repeat="playerNick in otherPlayersNick"
-                ng-show="playerNick != winnerNick">
-              {{playerNick}}
+                ng-repeat="player in otherPlayers"
+                ng-show="player.nickname !== winnerNick">
+              {{player.nickname}}
             </p>
           </td>
           <td>
             <p class="otherPlayers score"
-                ng-repeat="playerScore in otherPlayersScore"
-                ng-show="playerScore != winnerScore">
-              {{playerScore}}
+                ng-repeat="player in otherPlayers"
+                ng-show="player.nickname !== winnerNick">
+              {{player.points}}
             </p>
           </td>
         </tr>

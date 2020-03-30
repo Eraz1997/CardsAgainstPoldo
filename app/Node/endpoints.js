@@ -20,5 +20,6 @@ module.exports = {
 	"POST/turnWinner": "turnWinner",
 	"DELETE/card": "card",
 	"DELETE/game": "game",
+	"DELETE/forceGame": "forceGame",
 	"DELETE/user": "user"
 };

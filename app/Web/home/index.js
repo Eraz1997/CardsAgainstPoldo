@@ -29,6 +29,7 @@ angular.module("app", [])
 
 		async function polling() {
 			try {
+				$scope.gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				let getUsers = await $http.get("/api/users");
 				$scope.playerErr = "";
 				$scope.players = getUsers.data.users.map(function(user) {
@@ -122,4 +123,14 @@ angular.module("app", [])
 				$scope.nickErr = err.data.error;
 			}
 		};
+
+		$scope.forceCloseGame = async function() {
+			try {
+				await $http.delete("/api/forceGame");
+			} catch (err) {
+				console.log(err);
+				$window.alert(err.data.error);
+			}
+		};
+
 	});

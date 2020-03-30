@@ -23,11 +23,11 @@ angular.module("app", [])
 				let allPlayers = await $http.get("/api/winner");
 
 				console.log(allPlayers);
-				$scope.otherPlayersNick = allPlayers.data.scoreboard.map(function(user) {
-					return user.nickname;
-				});
-				$scope.otherPlayersScore = allPlayers.data.scoreboard.map(function(user) {
-					return user.points;
+				$scope.otherPlayers = allPlayers.data.scoreboard.map(function(user) {
+					return {
+						nickname: user.nickname,
+						points: user.points
+					};
 				});
 				$scope.$digest();
 			} catch (err) {
