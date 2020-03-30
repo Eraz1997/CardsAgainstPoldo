@@ -3,6 +3,6 @@ module.exports = {
 	// "[URL]" : "[FOLDER_NAME]"
 	"home": "home",
 	"game": "playingPage",
-	"cardManager": "cardManager"
+	"cardManager": "cardManager",
 	"leaderboard": "leaderboard"
 };
