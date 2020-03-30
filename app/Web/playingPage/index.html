@@ -37,7 +37,7 @@
         </div>
         <div class="black-card"
             ng-if="!watchingTurnWinner && !watchingPlayerResponses">
-          {{blackCard.text}}
+          {{blackCard.fullText}}
         </div>
         <div class="black-card"
             ng-if="watchingPlayerResponses">
@@ -49,17 +49,17 @@
               ng-disabled="currentResponse.index === 0"
               ng-class="currentResponse.index === 0 ? 'disabled' : ''"
               ng-click="changeCurrentResponse(currentResponse.index - 1)">
-            Precedente
+            <span>Precedente</span>
           </div>
           <div class="choose-best-button validate"
               ng-click="confirmBestResponse(currentResponse.index)">
-            Questa è la migliore!
+            <span>Questa è la migliore!</span>
           </div>
           <div class="choose-best-button"
               ng-disabled="currentResponse.index === responses.length - 1"
               ng-class="currentResponse.index === responses.length - 1 ? 'disabled' : ''"
               ng-click="changeCurrentResponse(currentResponse.index + 1)">
-            Successivo
+            <span>Successivo</span>
           </div>
         </div>
         <div class="my-cards"
@@ -76,7 +76,7 @@
           <span> Ottimo! Ora aspetta che anche gli altri decidano la propria risposta</span>
         </div>
         <div class="waiting-for-turn-winner"
-            ng-if="player.isMaster">
+            ng-if="player.isMaster && !watchingPlayerResponses">
           <span> Sei il master, aspetta che tutti sti cafoni rispondano</span>
         </div>
         <div class="options">

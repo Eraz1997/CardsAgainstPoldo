@@ -16,7 +16,7 @@ async function serverMain() {
 
 	console.log("[+] Link middlewares");
 	app.use(function(req, res, next) {
-		console.log("[!] Request at " + req.url + " from " + (req.headers['x-forwarded-for'] || req.connection.remoteAddress));
+		console.log("[!] " + req.method + " request at " + req.url + " from " + (req.headers['x-forwarded-for'] || req.connection.remoteAddress));
 		next();
 	});
 	app.use(bodyParser.json());

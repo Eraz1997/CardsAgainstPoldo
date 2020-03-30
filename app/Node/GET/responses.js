@@ -14,24 +14,41 @@ module.exports = async function(request, response) {
 		let user = await connection.models.users.select({
 			nickname: userNickname
 		}, ["isMaster"]);
-		if (!user || !user.isMaster) {
+		if (!user.length || !user[0].isMaster) {
 			throw "Utente non trovato o non avente il diritto di leggere le risposte in questo turno";
 		}
 		let responses = await connection.models.users.select({
 			nickname: {
 				$ne: userNickname
 			}
-		}, ["response"]).map(function(item) {
-			return item.response;
-		});
-		let pendingResponses = await connection.models.users.select({}, ["nickname"]).length - 1 - responses.length;
+		}, ["response"]);
+		let fullResponses = [];
+		for (let response of responses) {
+			let fullResponse = [];
+			response = response.response;
+			if (!response || !response.length) {
+				continue;
+			}
+			for (let card of response) {
+				let fullCard = await connection.models.cards.select({
+					uuid: card
+				});
+				if (!fullCard.length) {
+					throw "Alcune carte non sono state trovate";
+				}
+				fullResponse.push(fullCard[0]);
+			}
+			fullResponses.push(fullResponse);
+		}
+
+		let pendingResponses = (await connection.models.users.select({}, ["nickname"])).length - 1 - fullResponses.length;
 		if (pendingResponses < 0) {
 			throw "Qualcosa è andato storto: risposte ricevute maggiori rispetto al numero di utenti in partita";
 		}
 		await connection.closeConnection();
 
 		response.status(200).send({
-			responses: responses,
+			responses: fullResponses,
 			pendingResponses: pendingResponses
 		});
 

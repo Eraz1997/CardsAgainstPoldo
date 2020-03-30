@@ -12,6 +12,21 @@ module.exports = async function(request, response) {
 		if (!users.length) {
 			throw "Utente non trovato";
 		}
+		let responses = users[0].response;
+		if (responses && responses.length) {
+			let fullResponse = [];
+			for (let response of responses) {
+				let fullCard = await connection.models.cards.select({
+					uuid: response
+				});
+				if (!fullCard.length) {
+					throw "Alcune carte non sono state trovate";
+				}
+				fullResponse.push(fullCard[0]);
+			}
+			users[0].response = fullResponse;
+		}
+
 		await connection.closeConnection();
 
 		response.status(200).send(users[0]);
