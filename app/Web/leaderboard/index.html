@@ -1,63 +1,65 @@
 <!doctype html>
 <html ng-app="app">
 
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-    <script src="index.js"></script>
-    <link rel="stylesheet/less"
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+  <script src="index.js"></script>
+  <link rel="stylesheet/less"
       href="index.less"
-      type="text/css"/>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-  </head>
+      type="text/css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
+</head>
 
-  <body>
+<body>
 
-    <div ng-controller="controller as app">
-      <div class="content">
+  <div ng-controller="controller as app">
+    <div class="content">
 
-        <h1>Classifica</h1>
-        <h2>Speriamo non abbia vinto Gu</h2>
+      <h1>Classifica</h1>
+      <h2>Speriamo non abbia vinto Gu</h2>
 
       <table>
-          <tr>
-            <td>
-              <p class = "winner">
-                {{winnerNick}} &#9812;
-              </p>
-            </td>
-            <td>
-              <p class = "winner score">
-                {{winnerScore}}
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p class = otherPlayers
-              ng-repeat="playerNick in otherPlayersNick"
-              ng-show="playerNick != winnerNick">
+        <tr>
+          <td>
+            <p class="winner">
+              {{winnerNick}} &#9812;
+            </p>
+          </td>
+          <td>
+            <p class="winner score">
+              {{winnerScore}}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p class=otherPlayers
+                ng-repeat="playerNick in otherPlayersNick"
+                ng-show="playerNick != winnerNick">
               {{playerNick}}
-              </p>
-            </td>
-            <td>
-              <p class = "otherPlayers score"
-              ng-repeat="playerScore in otherPlayersScore"
-              ng-show="playerScore != winnerScore">
+            </p>
+          </td>
+          <td>
+            <p class="otherPlayers score"
+                ng-repeat="playerScore in otherPlayersScore"
+                ng-show="playerScore != winnerScore">
               {{playerScore}}
-              </p>
-            </td>
-          </tr>
-        </table>
-        <div class="footerDivider">
-
-        </div>
-          <div class="footer">
-            <a href="/home" class="footer">
-              GIOCA ANCORA BOOMER
-            </a>
-          </div>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <div class="footerDivider">
 
       </div>
+      <div class="footer">
+        <a ng-click="goHome()"
+            class="footer">
+          GIOCA ANCORA BOOMER
+        </a>
+      </div>
+
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
