@@ -61,7 +61,8 @@ module.exports = async function(request, response) {
 				isEnded: false,
 				turnWinner: null,
 				turnWinnerCards: null,
-				currentBlackCard: currentBlackCard
+				currentBlackCard: currentBlackCard,
+				turn: 0
 			});
 		} else {
 			let games = await connection.models.games.select({});

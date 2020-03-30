@@ -40,7 +40,8 @@ Schemas.game = new Schema({
 	isEnded: Boolean,
 	turnWinner: String,
 	turnWinnerCards: [String],
-	currentBlackCard: String
+	currentBlackCard: String,
+	turn: Number
 });
 
 module.exports = Schemas;

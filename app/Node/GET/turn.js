@@ -4,17 +4,16 @@ const dbManager = require("../../Globals/dbManager.js");
 module.exports = async function(request, response) {
 	let connection;
 	try {
-		let userNickname = request.query.userNickname;
 		connection = await dbManager.connect();
-		let users = await connection.models.users.select({
-			nickname: userNickname
-		}, ["nickname", "points", "isMaster", "response"]);
-		if (!users.length) {
-			throw "Utente non trovato";
+		let games = await connection.models.games.select({});
+		if (!games.length || !games[0].currentBlackCard) {
+			throw "Nessun turno è stato ancora giocato";
 		}
 		await connection.closeConnection();
 
-		response.status(200).send(users[0]);
+		response.status(200).send({
+			turn: games[0].turn
+		});
 
 	} catch (err) {
 		console.log(err);

@@ -20,6 +20,9 @@ module.exports = async function(request, response) {
 		if (existingCards.length) {
 			throw "Carta già esistente";
 		}
+		if (isBlack && !text.includes("_")) {
+			throw "Le carte nere devono contenere almeno uno spazio per le risposte (\"_\")";
+		}
 		await connection.models.cards.create({
 			text: text,
 			uuid: uuid,

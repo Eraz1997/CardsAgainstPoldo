@@ -20,7 +20,7 @@ module.exports = async function(request, response) {
 			throw "Carta non trovata";
 		}
 		await connection.closeConnection();
-		response.status(200).send(blackCard);
+		response.status(200).send(blackCard[0]);
 	} catch (err) {
 		console.log(err);
 		await connection.closeConnection();

@@ -11,6 +11,9 @@ module.exports = async function(request, response) {
 		if (!userNickname || userNickname === "" || !cards || cards === "" || !cards.length) {
 			throw "Parametro non presente";
 		}
+		cards = cards.map(function(card) {
+			return card.uuid;
+		});
 		connection = await dbManager.connect();
 		let user = await connection.models.users.select({
 			nickname: userNickname
@@ -29,9 +32,11 @@ module.exports = async function(request, response) {
 		let blackCard = await connection.models.cards.select({
 			uuid: game.currentBlackCard
 		});
+		blackCard = blackCard[0];
 		if (user.response) {
 			throw "Risposta già inviata";
 		}
+		user = user[0];
 		if (cards.filter(function(card) {
 				return user.cards.includes(card);
 			}).length !== cards.length) {

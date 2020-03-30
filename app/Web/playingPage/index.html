@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="my-cards"
-            ng-if="!watchingTurnWinner && !player.response.length && !player.isMaster">
+            ng-if="!watchingTurnWinner && player.response.length !== blackCard.numberOfResponses && !player.isMaster">
           <div class="my-card"
               ng-repeat="card in player.cards"
               ng-click="chooseResponse(card)">
@@ -72,7 +72,7 @@
           </div>
         </div>
         <div class="waiting-for-turn-winner"
-            ng-if="player.response.length">
+            ng-if="player.response.length === blackCard.numberOfResponses">
           <span> Ottimo! Ora aspetta che anche gli altri decidano la propria risposta</span>
         </div>
         <div class="waiting-for-turn-winner"

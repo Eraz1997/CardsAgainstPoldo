@@ -2,6 +2,31 @@
 angular.module("app", [])
 	.controller("controller", async function($scope, $http, $location, $window, $timeout) {
 
+		let getGeneralInfos = async function() {
+			try {
+				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
+				let blackCard = (await $http.get("/api/blackCard")).data;
+				blackCard.numberOfResponses = blackCard.text.split("_").length - 1;
+				$scope.blackCard = blackCard;
+				$scope.turn = (await $http.get("/api/turn")).data.turn;
+				player.cards = [];
+				if (!player.isMaster) {
+					player.cards = (await $http.get("/api/cards?userNickname=" + player.nickname)).data;
+				}
+				player.response = player.response ? player.response.map(function(card) {
+					return {
+						uuid: card
+					};
+				}) : [];
+				$scope.player = player;
+
+			} catch (err) {
+				console.log(err);
+				$window.alert(err.data.error);
+			}
+			$scope.$digest();
+		};
+
 		let init = async function() {
 			// set player
 			$scope.player = {
@@ -12,29 +37,16 @@ angular.module("app", [])
 			try {
 				$scope.gameStarted = (await $http.get("/api/gameStarted")).data.started;
 			} catch (err) {
+				console.log(err);
 				$window.alert(err.data.error);
 			}
 			if (!$scope.gameStarted) {
 				$scope.$digest();
 				return;
 			}
-
-			// get black card
-			try {
-				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
-				$scope.blackCard = (await $http.get("/api/blackCard")).data;
-				player.cards = [];
-				if (!player.isMaster) {
-					player.cards = (await $http.get("/api/cards?userNickname=" + player.nickname)).data;
-				}
-				$scope.player = player;
-
-			} catch (err) {
-				$window.alert(err.data.error);
-			}
+			await getGeneralInfos();
 			$scope.watchingTurnWinner = false;
 			$scope.watchingPlayerResponses = false;
-			$scope.player.response = [];
 			$scope.$digest();
 		};
 
@@ -45,6 +57,7 @@ angular.module("app", [])
 				await $http.delete("/api/user?userNickname=" + $scope.player.nickname);
 				$window.location.replace("/home");
 			} catch (err) {
+				console.log(err);
 				$window.alert(err.data.error);
 			}
 		};
@@ -57,11 +70,11 @@ angular.module("app", [])
 
 			try {
 				// finché non cambia la carta, non è cambiato il turno
-				let newCard = (await $http.get("/api/blackCard")).data;
-				if (newCard === $scope.blackCard) {
+				let newWinner = (await $http.get("/api/turnWinner")).data;
+				if (newWinner.turn === $scope.turn) {
 					$timeout(startCheckingTurnWinner, 1000);
 				} else {
-					$scope.blackCard = newCard;
+					await getGeneralInfos();
 					$scope.turnWinnerCard = (await $http.get("/api/turnWinner")).data;
 					let index = 0;
 					$scope.turnWinnerCard.fullText = $scope.blackCard.text.split("_").map(function(item) {
@@ -74,6 +87,7 @@ angular.module("app", [])
 					$scope.watchingTurnWinner = true;
 				}
 			} catch (err) {
+				console.log(err);
 				$window.alert(err.data.error);
 			}
 			$scope.$digest();
@@ -81,22 +95,22 @@ angular.module("app", [])
 
 		$scope.chooseResponse = async function(card) {
 			$scope.player.response.push(card);
-			$scope.player.cards.filter(function(c) {
+			$scope.player.cards = $scope.player.cards.filter(function(c) {
 				return card.uuid !== c.uuid;
 			});
-			if ($scope.player.response.length === $scope.blackCard.split("_").length - 1) {
+			if ($scope.player.response.length === $scope.blackCard.numberOfResponses) {
 				try {
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,
 						cards: $scope.player.response
 					});
-					$scope.player.response = [];
 					startCheckingTurnWinner();
 				} catch (err) {
+					console.log(err);
 					$window.alert(err.data.error);
 				}
 			}
-
+			$scope.$digest();
 		};
 
 		$scope.confirmBestResponse = async function() {
