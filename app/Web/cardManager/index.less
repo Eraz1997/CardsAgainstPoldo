@@ -29,6 +29,7 @@ html {
         text-align: center;
         color: #ffffff;
         position: relative;
+        height: 10vh;
       }
 
       .editor {
@@ -36,95 +37,102 @@ html {
         flex-direction: column;
         flex: 1;
         width: 100%;
+        height: 85vh;
         position: relative;
 
         .panel-container {
           display: flex;
           flex-direction: row;
-          flex: 1;
           position: relative;
+          height: 100%;
+
+          @media (max-width: 750px) {
+            flex-direction: column;
+          }
 
           .panel {
             display: flex;
             flex-direction: column;
             flex: 50%;
-            padding: 15px;
+            padding: 0 15px;
             position: relative;
+            height: 100%;
 
-            .list {
-              flex: 0 0 600px;
-              max-height: 80%;
-              display: flex;
-              flex-direction: column;
+            .list-container {
               overflow-y: scroll;
-              position: relative;
-              width: 100%;
-              padding: 10px;
+              height: 100%;
+              flex: 0 0 600px;
 
-              .card {
-                border-width: 4px;
-                border-radius: 12px;
+              .list {
+                display: flex;
+                flex-direction: column;
+                overflow-y: visible;
+                position: relative;
                 width: 100%;
-                flex: 0 0 80px;
-                padding: 10px;
-                border-style: solid;
-                border-color: white;
-                box-sizing: border-box;
-                margin-bottom: 6px;
+                //padding: 10px;
 
-                .delete-button {
-                  position: absolute;
-                  right: 0;
-                  top: 0;
-                  background-color: red;
-                  font-weight: bold;
-                  border-radius: 6px;
-                  width: auto;
-                  padding: 3px;
-                  height: 30px;
-                  color: white;
-                  display: none;
-                  justify-content: center;
-                  align-items: center;
-                  cursor: pointer;
-                }
+                .card {
+                  border-width: 4px;
+                  border-radius: 12px;
+                  width: 100%;
+                  flex: 0 0 60px;
+                  margin: 5px 0;
+                  border-style: solid;
+                  border-color: white;
+                  box-sizing: border-box;
+                  //margin-bottom: 6px;
 
-                &:hover {
                   .delete-button {
-                    display: flex;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    background-color: red;
+                    font-weight: bold;
+                    border-radius: 6px;
+                    width: auto;
+                    //padding: 3px;
+                    height: 30px;
+                    color: white;
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
                   }
-                }
 
-                &.white {
-                  background-color: white;
-                  color: black;
-                }
+                  &:hover {
+                    .delete-button {
+                      display: flex;
+                    }
+                  }
 
-                &.black {
-                  background-color: black;
-                  color: white;
+                  &.white {
+                    background-color: white;
+                    color: black;
+                  }
+
+                  &.black {
+                    background-color: black;
+                    color: white;
+                  }
                 }
               }
             }
 
             .controls {
-              margin-top: 10px;
+              margin: 10px 0;
               display: flex;
-              flex: 0 0 100px;
               flex-direction: row;
               position: relative;
+              flex-basis: 20px;
 
               .textbox {
                 flex: 80%;
-                height: 100%;
                 overflow-wrap: break-word;
                 resize: none;
+                margin-right: 10px;
               }
 
               .send-button {
-                margin-left: 10px;
-                flex: 1;
-                height: 100%;
               }
             }
 
@@ -139,8 +147,8 @@ html {
         font-family: Helvetica, Arial, sans-serif;
         position: relative;
         width: 100%;
+        height: 5vh;
         flex: 0 0 35px;
-        padding-left: 10px;
         justify-content: center;
         align-items: center;
         display: flex;
@@ -149,7 +157,7 @@ html {
           color: white;
           flex: 0 0 auto;
           position: relative;
-          margin-right: 10px;
+          margin-left: 10px;
         }
 
         span {

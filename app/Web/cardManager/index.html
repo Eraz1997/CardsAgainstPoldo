@@ -17,12 +17,13 @@
       <div class="editor">
         <div class="panel-container">
           <div class="panel white">
-
-            <div class="list">
-              <div class="card white" ng-repeat="card in whiteDeck">
-                {{card.text}}
-                <div class="delete-button" ng-click="deleteCard(card)">
-                  <span>Elimina</span>
+            <div class="list-container">
+              <div class="list">
+                <div class="card white" ng-repeat="card in whiteDeck">
+                  {{card.text}}
+                  <div class="delete-button" ng-click="deleteCard(card)">
+                    <span>Elimina</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -33,14 +34,15 @@
 
           </div>
           <div class="panel black">
-            <div class="list">
-              <div class="card black" ng-repeat="card in blackDeck">
-                {{card.text}}
-                <div class="delete-button" ng-click="deleteCard(card)">
-                  <span>Elimina</span>
+            <div class="list-container">
+              <div class="list">
+                <div class="card black" ng-repeat="card in blackDeck">
+                  {{card.text}}
+                  <div class="delete-button" ng-click="deleteCard(card)">
+                    <span>Elimina</span>
+                  </div>
                 </div>
               </div>
-
             </div>
             <div class="controls">
             <textarea class="textbox" ng-model="blackText"></textarea>
