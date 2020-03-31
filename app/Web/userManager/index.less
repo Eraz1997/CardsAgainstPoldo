@@ -1,0 +1,98 @@
+body {
+  background-color: #000000;
+  font-family: Helvetica, Arial, sans-serif;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1 {
+      line-height: 0.5vw;
+      font-weight: bold;
+      font-size: 100px;
+      font-size: 8vw;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    h2 {
+      margin-bottom: 50px;
+      font-weight: bold;
+      font-size: 50px;
+      font-size: 2vw;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    p {
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .nickInput {
+      text-align: center;
+    }
+
+    .playerList {
+      border-radius: 10px;
+      border: 3px solid #ffffff;
+    }
+
+    .player {
+      margin: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      max-height: 30px;
+      align-items: center;
+
+      .removeButton {
+        margin-left: 10px;
+      }
+    }
+
+    .playerJoined {
+      text-align: center;
+      display: inline-block;
+    }
+
+    .errorMsg {
+      height: 10px;
+    }
+
+    .footer {
+      color: #ffffff;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+
+    .staccatutto {
+      flex: 0 0 50px;
+      background-color: red;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 20px;
+      border-style: solid;
+      border-width: 4px;
+      border-color: white;
+
+      &:hover {
+        background-color: darken(red, 10%);
+      }
+
+      &:active {
+        background-color: white;
+      }
+
+      .staccatutto-text {
+        color: white;
+        font-size: 24px;
+      }
+    }
+  }
+}
