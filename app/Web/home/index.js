@@ -62,7 +62,7 @@ angular.module("app", [])
 			}
 		}
 		await polling();
-		$interval(polling, 1000);
+		$interval(polling, 10000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo

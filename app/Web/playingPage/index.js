@@ -27,7 +27,7 @@ angular.module("app", [])
 			try {
 				let responses = (await $http.get("/api/responses?userNickname=" + $scope.player.nickname)).data;
 				if (responses.pendingResponses) {
-					$timeout(startCheckingPlayersResponses, 1000);
+					$timeout(startCheckingPlayersResponses, 10000);
 					return;
 				}
 				responses.responses.map(function(response, index) {
@@ -56,7 +56,7 @@ angular.module("app", [])
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
-					$timeout(startCheckingTurnWinner, 1000);
+					$timeout(startCheckingTurnWinner, 10000);
 				} else {
 					await getGeneralInfos();
 					$scope.turnWinnerCard = (await $http.get("/api/turnWinner")).data;
