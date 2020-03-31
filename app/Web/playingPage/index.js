@@ -17,7 +17,7 @@ angular.module("app", [])
 				if (index - 1 >= cards.length) {
 					return item + "_";
 				}
-				return item + " " + cards[index - 1].text + " ";
+				return item + cards[index - 1].text;
 			}).join("");
 			return fullText.substring(0, fullText.length - 1);
 		};
