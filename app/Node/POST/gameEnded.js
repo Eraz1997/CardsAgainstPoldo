@@ -20,15 +20,13 @@ module.exports = async function(request, response) {
 		if (!user.length) {
 			throw "Utente non trovato";
 		}
-
+		user = user[0];
 		let games = await connection.models.games.select({});
 		if (!games.length || !games[0].isStarted) {
 			throw "Gioco non trovato";
 		}
 
-		console.log(user);
-		if (user.isMaster)
-		{
+		if (user.isMaster) {
 			await connection.models.games.modify({}, {
 				isEnded: true
 			});

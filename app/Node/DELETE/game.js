@@ -17,6 +17,7 @@ module.exports = async function(request, response) {
 		if (!user.length) {
 			throw "Giocatore non trovato";
 		}
+		user = user[0];
 
 		let games = await connection.models.games.select({});
 		if (!games.length) {

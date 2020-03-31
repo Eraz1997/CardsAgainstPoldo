@@ -1,98 +1,96 @@
  <!doctype html>
-<html ng-app="app">
+ <html ng-app="app">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+ <head>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+   <script src="index.js"></script>
+   <link rel="stylesheet/less"
+       href="index.less"
+       type="text/css" />
+   <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
+ </head>
 
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
-      <h1 ng-if="player.isMaster">{{player.nickname}} &#9733;</h1>
-      <h1 ng-if="!player.isMaster">{{player.nickname}}</h1>
-      <h2> Punti: {{player.points}}</h2>
+ <body>
+   <div ng-controller="controller as app">
+     <div class="content">
+       <h1 ng-if="player.isMaster">{{player.nickname}} &#9733;</h1>
+       <h1 ng-if="!player.isMaster">{{player.nickname}}</h1>
+       <h2> Punti: {{player.points}}</h2>
 
-      <div class="no-game-element"
-          ng-if="!gameStarted">
-        <span>
-          COSA CI FAI QUI BRUTTO CAFONE! NESSUNO STA GIOCANDO!</span>
-      </div>
+       <div class="no-game-element"
+           ng-if="!gameStarted">
+         <span>
+           COSA CI FAI QUI BRUTTO CAFONE! NESSUNO STA GIOCANDO!</span>
+       </div>
 
-      <div class="game"
-          ng-if="gameStarted">
-        <div class="turn-winner-card-container"
-            ng-if="watchingTurnWinner">
-          <div class="turn-winner-card">
-            {{turnWinnerCard.turnWinner.nickname}} ha scritto: {{turnWinnerCard.fullText}}
-          </div>
-          <div class="next-turn-button"
-              ng-click="nextTurn()">
-            Bella merda, continuiamo!
-          </div>
-        </div>
-        <div class="black-card"
-            ng-if="!watchingTurnWinner && !watchingPlayerResponses">
-          {{blackCard.fullText}}
-        </div>
-        <div class="black-card"
-            ng-if="watchingPlayerResponses">
-          {{currentResponse.fullText}}
-        </div>
-        <div class="choose-best-response-container"
-            ng-if="watchingPlayerResponses">
-          <div class="choose-best-button"
-              ng-disabled="currentResponse.index === 0"
-              ng-class="currentResponse.index === 0 ? 'disabled' : ''"
-              ng-click="changeCurrentResponse(currentResponse.index - 1)">
-            <span>Precedente</span>
-          </div>
-          <div class="choose-best-button validate"
-              ng-click="confirmBestResponse(currentResponse.index)">
-            <span>Questa è la migliore!</span>
-          </div>
-          <div class="choose-best-button"
-              ng-disabled="currentResponse.index === responses.length - 1"
-              ng-class="currentResponse.index === responses.length - 1 ? 'disabled' : ''"
-              ng-click="changeCurrentResponse(currentResponse.index + 1)">
-            <span>Successivo</span>
-          </div>
-        </div>
-        <div class="my-cards"
-            ng-if="!watchingTurnWinner && player.response.length !== blackCard.numberOfResponses && !player.isMaster">
-          <div class="my-card"
-              ng-repeat="card in player.cards"
-              ng-click="chooseResponse(card)">
-            <span>
-              {{card.text}}</span>
-          </div>
-        </div>
-        <div class="waiting-for-turn-winner"
-            ng-if="player.response.length === blackCard.numberOfResponses">
-          <span> Ottimo! Ora aspetta che anche gli altri decidano la propria risposta</span>
-        </div>
-        <div class="waiting-for-turn-winner"
-            ng-if="player.isMaster && !watchingPlayerResponses">
-          <span> Sei il master, aspetta che tutti sti cafoni rispondano</span>
-        </div>
-        <div>
-        <div class="options">
-        <span class="options-button"
-            ng-if="player.isMaster"
-            ng-click="endGame()"><span>Termina la partita</span></span>
-        <!-- <span class="divider"></span> -->
-        <span class="options-button"
-            ng-click="leaveGame()"><span>Esci dalla partita</span></span>
-        </div>
-      </div>
+       <div class="game"
+           ng-if="gameStarted">
+         <div class="turn-winner-card-container"
+             ng-if="watchingTurnWinner">
+           <div class="turn-winner-card">
+             {{turnWinnerCard.turnWinner.nickname}} ha scritto: {{turnWinnerCard.fullText}}
+           </div>
+           <div class="next-turn-button"
+               ng-click="nextTurn()">
+             Bella merda, continuiamo!
+           </div>
+         </div>
+         <div class="black-card"
+             ng-if="!watchingTurnWinner && !watchingPlayerResponses">
+           {{blackCard.fullText}}
+         </div>
+         <div class="black-card"
+             ng-if="watchingPlayerResponses">
+           {{currentResponse.fullText}}
+         </div>
+         <div class="choose-best-response-container"
+             ng-if="watchingPlayerResponses">
+           <div class="choose-best-button"
+               ng-disabled="currentResponse.index === 0"
+               ng-class="currentResponse.index === 0 ? 'disabled' : ''"
+               ng-click="changeCurrentResponse(currentResponse.index - 1)">
+             <span>Precedente</span>
+           </div>
+           <div class="choose-best-button validate"
+               ng-click="confirmBestResponse(currentResponse.index)">
+             <span>Questa è la migliore!</span>
+           </div>
+           <div class="choose-best-button"
+               ng-disabled="currentResponse.index === responses.length - 1"
+               ng-class="currentResponse.index === responses.length - 1 ? 'disabled' : ''"
+               ng-click="changeCurrentResponse(currentResponse.index + 1)">
+             <span>Successivo</span>
+           </div>
+         </div>
+         <div class="my-cards"
+             ng-if="!watchingTurnWinner && player.response.length !== blackCard.numberOfResponses && !player.isMaster">
+           <div class="my-card"
+               ng-repeat="card in player.cards"
+               ng-click="chooseResponse(card)">
+             <span>
+               {{card.text}}</span>
+           </div>
+         </div>
+         <div class="waiting-for-turn-winner"
+             ng-if="player.response.length === blackCard.numberOfResponses">
+           <span> Ottimo! Ora aspetta che anche gli altri decidano la propria risposta</span>
+         </div>
+         <div class="waiting-for-turn-winner"
+             ng-if="player.isMaster && !watchingPlayerResponses">
+           <span> Sei il master, aspetta che tutti sti cafoni rispondano</span>
+         </div>
+         <div class="options">
+           <span class="options-button"
+               ng-if="player.isMaster"
+               ng-click="endGame()"><span>Termina la partita</span></span>
+           <span class="divider"></span>
+           <span class="options-button"
+               ng-click="leaveGame()"><span>Esci dalla partita</span></span>
+         </div>
 
-    </div>
-  </div>
-  </div>
-</body>
+       </div>
+     </div>
+   </div>
+ </body>
 
-</html>
+ </html>

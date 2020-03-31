@@ -143,7 +143,7 @@ angular.module("app", [])
 				await $http.post("/api/gameEnded", {
 					userNickname: $scope.player.nickname
 				});
-				//$window.location.replace("/home");
+				$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -167,6 +167,10 @@ angular.module("app", [])
 			$scope.blackCard.fullText = getFullText($scope.player.response);
 			if ($scope.player.response.length === $scope.blackCard.numberOfResponses) {
 				try {
+					let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
+					if (gameEnded) {
+						$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					}
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,
 						cards: $scope.player.response
