@@ -124,13 +124,4 @@ angular.module("app", [])
 			}
 		};
 
-		$scope.forceCloseGame = async function() {
-			try {
-				await $http.delete("/api/forceGame");
-			} catch (err) {
-				console.log(err);
-				$window.alert(err.data.error);
-			}
-		};
-
 	});

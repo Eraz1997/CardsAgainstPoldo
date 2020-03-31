@@ -137,6 +137,19 @@ angular.module("app", [])
 			}
 		};
 
+		$scope.endGame = async function() {
+			console.log($scope.player.nickname);
+			try {
+				await $http.post("/api/gameEnded", {
+					userNickname: $scope.player.nickname
+				});
+				//$window.location.replace("/home");
+			} catch (err) {
+				console.log(err);
+				$window.alert(err.data.error);
+			}
+		};
+
 		$scope.changeCurrentResponse = async function(index) {
 			if (index < 0 || index >= $scope.responses.length) {
 				return;

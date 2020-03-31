@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html ng-app="app">
 
 <head>
@@ -79,10 +79,14 @@
             ng-if="player.isMaster && !watchingPlayerResponses">
           <span> Sei il master, aspetta che tutti sti cafoni rispondano</span>
         </div>
+        <div>
         <div class="options">
-          <span class="divider"></span>
-          <span class="exit-button"
-              ng-click="leaveGame()"><span>Esci dalla partita</span></span>
+        <span class="options-button"
+            ng-if="player.isMaster"
+            ng-click="endGame()"><span>Termina la partita</span></span>
+        <!-- <span class="divider"></span> -->
+        <span class="options-button"
+            ng-click="leaveGame()"><span>Esci dalla partita</span></span>
         </div>
       </div>
 
