@@ -5,32 +5,36 @@ module.exports = async function(request, response) {
 	let connection;
 
 	try {
-		let userNickname = request.query.userNickname;
+
+		let userNickname = request.body.userNickname;
 
 		if (!userNickname || userNickname === "") {
-			throw "Parametro non presente";
+			throw "Parametri non presenti";
 		}
+
 		connection = await dbManager.connect();
+
 		let user = await connection.models.users.select({
 			nickname: userNickname
 		});
 		if (!user.length) {
-			throw "Giocatore non trovato";
+			throw "Utente non trovato";
 		}
 		user = user[0];
-
 		let games = await connection.models.games.select({});
-		if (!games.length) {
-			throw "Partita già chiusa";
+		if (!games.length || !games[0].isStarted) {
+			throw "Gioco non trovato";
 		}
-		let game = games[0];
-		if (!game.isEnded && !user.isMaster) {
-			throw "Solo il master può chiudere la partita";
-		}
-		await connection.models.games.destroy({});
-		await connection.models.users.destroy({});
-		await connection.closeConnection();
 
+		if (user.isMaster) {
+			await connection.models.games.modify({}, {
+				isEnded: true
+			});
+		} else {
+			throw "Solo il master può terminare la partita";
+		}
+
+		await connection.closeConnection();
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);

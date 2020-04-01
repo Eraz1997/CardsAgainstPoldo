@@ -58,7 +58,7 @@
           <div class="player"
               ng-repeat="player in players">
             <p class="name master"
-                ng-show="player === master">
+              ng-show="player === master">
               {{player}} &#9733;
             </p>
             <p class="name"
@@ -80,12 +80,6 @@
             class="footer">
           Gestisci carte
         </a>
-      </div>
-
-      <div class="staccatutto"
-          ng-if="gameEnded"
-          ng-click="forceCloseGame()">
-        <span class="staccatutto-text"> STACCA STACCAAAAA </span>
       </div>
     </div>
   </div>

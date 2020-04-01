@@ -62,7 +62,7 @@ angular.module("app", [])
 			}
 		}
 		await polling();
-		$interval(polling, 1000);
+		$interval(polling, 10000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo
@@ -121,15 +121,6 @@ angular.module("app", [])
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
-			}
-		};
-
-		$scope.forceCloseGame = async function() {
-			try {
-				await $http.delete("/api/forceGame");
-			} catch (err) {
-				console.log(err);
-				$window.alert(err.data.error);
 			}
 		};
 

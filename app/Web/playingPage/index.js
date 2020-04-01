@@ -17,7 +17,7 @@ angular.module("app", [])
 				if (index - 1 >= cards.length) {
 					return item + "_";
 				}
-				return item + " " + cards[index - 1].text + " ";
+				return item + cards[index - 1].text;
 			}).join("");
 			return fullText.substring(0, fullText.length - 1);
 		};
@@ -27,7 +27,7 @@ angular.module("app", [])
 			try {
 				let responses = (await $http.get("/api/responses?userNickname=" + $scope.player.nickname)).data;
 				if (responses.pendingResponses) {
-					$timeout(startCheckingPlayersResponses, 1000);
+					$timeout(startCheckingPlayersResponses, 10000);
 					return;
 				}
 				responses.responses.map(function(response, index) {
@@ -56,7 +56,7 @@ angular.module("app", [])
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
-					$timeout(startCheckingTurnWinner, 1000);
+					$timeout(startCheckingTurnWinner, 10000);
 				} else {
 					await getGeneralInfos();
 					$scope.turnWinnerCard = (await $http.get("/api/turnWinner")).data;
@@ -137,6 +137,19 @@ angular.module("app", [])
 			}
 		};
 
+		$scope.endGame = async function() {
+			console.log($scope.player.nickname);
+			try {
+				await $http.post("/api/gameEnded", {
+					userNickname: $scope.player.nickname
+				});
+				$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+			} catch (err) {
+				console.log(err);
+				$window.alert(err.data.error);
+			}
+		};
+
 		$scope.changeCurrentResponse = async function(index) {
 			if (index < 0 || index >= $scope.responses.length) {
 				return;
@@ -154,6 +167,10 @@ angular.module("app", [])
 			$scope.blackCard.fullText = getFullText($scope.player.response);
 			if ($scope.player.response.length === $scope.blackCard.numberOfResponses) {
 				try {
+					let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
+					if (gameEnded) {
+						$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					}
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,
 						cards: $scope.player.response
