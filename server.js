@@ -6,7 +6,8 @@ async function serverMain() {
 	const dbManager = require("./app/Globals/dbManager.js");
 	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
-	const ws = require("./app/Plugins/websocket.js");
+	const WebSocketServer = require("websocket").server;
+	const http = require("http");
 
 	console.log("[+] Init app");
 	const app = express();
@@ -54,10 +55,57 @@ async function serverMain() {
 
 	console.log("[+] Start HTTP server");
 	app.listen(constants.NODE_PORT);
-	console.log("[+] Start WebSocket server");
-	//ws.start( WHAT );
 
-	console.log("[+] Running");
+	console.log("[+] Init WebSocket server");
+
+	let wsServer = http.createServer(function(request, response) {
+		console.log("[!] Received HTTP request in WS port");
+		response.writeHead(404);
+		response.end();
+	});
+
+	console.log("[+] Start WebSocket server");
+	wsServer.listen(constants.WEB_SOCKET_PORT);
+	let ws = new WebSocketServer({
+		httpServer: wsServer,
+		autoAcceptConnections: false
+	});
+
+	console.log("[+] Configure WS routes");
+
+	const wsEndpoints = require("./app/WS/endpoints.js");
+	let wsRoutes = {};
+	for (let eventName of Object.keys(wsEndpoints)) {
+		wsRoutes[eventName] = require("./app/WS/" + wsEndpoints[eventName] + ".js");
+	}
+	ws.on("request", function(request) {
+
+		let connection = request.accept("echo-protocol", request.origin);
+		console.log("[!] WS connection accepted");
+		connection.on("message", function(message) {
+			if (message.type === "utf8") {
+				console.log("[!] WS subscription received: "); // + get event (use a specific language)
+				// route to right wsRoute in wsRoutes, if present
+				let messages = message.utf8Data.split(" ");
+				let username = messages.length > 1 ? messages[0] : null;
+				let eventName = messages.length > 1 ? messages[1] : messages[0];
+				if (wsRoutes[eventName]) {
+					connection.sendUTF(wsRoutes[eventName](username));
+				} else {
+
+					console.log("Received Message: " + message.utf8Data); // mock of response router
+					connection.sendUTF(message.utf8Data); // mock of response router
+					// handle error
+
+				}
+			}
+		});
+		connection.on("close", function() { //  reasonCode, description) {
+			console.log("[!] " + connection.remoteAddress + " has lost WS connection.");
+		});
+	});
+
+	console.log("[+] Working\n");
 }
 
 serverMain();

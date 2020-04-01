@@ -1,6 +1,6 @@
 "use strict";
 module.exports = {
-	// "[URL]": "[GET/POST/DELETE/PUT]/[FILE]"
+	// "[GET/POST/DELETE/PUT]/[FILE]" : "[URL]" 
 
 	"GET/deck": "deck",
 	"GET/gameStarted": "gameStarted",

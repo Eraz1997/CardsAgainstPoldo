@@ -1,6 +1,6 @@
 "use strict";
 angular.module("app", [])
-	.controller("controller", async function($scope, $http, $window) {
+	.controller("controller", async function($scope, $http, $window, ) {
 
 		let getCards = async function() {
 			try {
@@ -54,8 +54,8 @@ angular.module("app", [])
 			}
 		};
 
-    $scope.sendDeck = async function(deck){
-			deck=deck.replace(/^\s*[\r\n]/gm,"\n");
+		$scope.sendDeck = async function(deck) {
+			deck = deck.replace(/^\s*[\r\n]/gm, "\n");
 			let cards = deck.match(/[^\r\n]+/g);
 			if (cards != null && cards.length) {
 				let blackCards = false;
@@ -64,46 +64,46 @@ angular.module("app", [])
 						if (card === "BIANCHE") {
 							blackCards = false;
 							console.log("Sezione carte bianche");
-						}
-						else if (card === "NERE") {
+						} else if (card === "NERE") {
 							blackCards = true;
 							console.log("Sezione carte nere");
-						}
-						else {
+						} else {
 							if (blackCards && !card.includes("_")) {
 								$window.alert("La seguente carta non è stata inviata poiché non contiene nessuno spazio vuoto:\n" + card);
-							}
-							else {
-								await sendCard({text: card, isBlack: blackCards});
+							} else {
+								await sendCard({
+									text: card,
+									isBlack: blackCards
+								});
 								console.log("Carta inviata: " + card);
 							}
 						}
 					}
-				}
-				else {
+				} else {
 					$window.alert("Formato deck non valido");
 				}
-			}
-			else {
+			} else {
 				$window.alert("Deck vuoto");
 			}
 		};
 
 	})
 
-	.directive('onReadFile', function ($parse) {
+	.directive('onReadFile', function($parse) {
 		return {
 			restrict: 'A',
 			scope: false,
 			link: function(scope, element, attrs) {
-	            var fn = $parse(attrs.onReadFile);
+				var fn = $parse(attrs.onReadFile);
 
 				element.on('change', function(onChangeEvent) {
 					var reader = new FileReader();
 
 					reader.onload = function(onLoadEvent) {
 						scope.$apply(function() {
-							fn(scope, {$fileContent:onLoadEvent.target.result});
+							fn(scope, {
+								$fileContent: onLoadEvent.target.result
+							});
 						});
 					};
 

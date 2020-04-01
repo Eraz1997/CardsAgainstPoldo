@@ -24,7 +24,7 @@ module.exports = async function(request, response) {
 	} catch (err) {
 		console.log(err);
 		await connection.closeConnection();
-		response.status(200).send({
+		response.status(400).send({
 			error: err
 		});
 	}
