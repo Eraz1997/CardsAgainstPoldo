@@ -6,6 +6,7 @@ async function serverMain() {
 	const dbManager = require("./app/Globals/dbManager.js");
 	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
+	const ws = require("./app/Plugins/websocket.js");
 
 	console.log("[+] Init app");
 	const app = express();
@@ -51,8 +52,10 @@ async function serverMain() {
 		app.use(constants.WEB_PREFIX + p, express.static(page));
 	}
 
-	console.log("[+] Start");
+	console.log("[+] Start HTTP server");
 	app.listen(constants.NODE_PORT);
+	console.log("[+] Start WebSocket server");
+	//ws.start( WHAT );
 
 	console.log("[+] Running");
 }
