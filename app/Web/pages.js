@@ -1,5 +1,5 @@
 "use strict";
-module.exports = {
+var WEB_PAGES = {
 	// "[URL]" : "[FOLDER_NAME]"
 	"home": "home",
 	"": "home",
@@ -8,3 +8,4 @@ module.exports = {
 	"leaderboard": "leaderboard",
 	"userManager": "userManager"
 };
+module.exports = WEB_PAGES;

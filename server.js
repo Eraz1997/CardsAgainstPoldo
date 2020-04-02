@@ -28,19 +28,19 @@ async function serverMain() {
 
 	console.log("[+] Get endpoints");
 	const endpoints = require("./app/Node/endpoints.js");
-	for (let filename of Object.keys(endpoints)) {
-		let e = endpoints[filename];
+	for (let filename of endpoints) {
 		let method = filename.split("/")[0];
+		let url = filename.split("/")[1];
 		let endpoint = "./app/Node/" + filename + ".js";
 		let handler = require(endpoint);
 		if (method === "GET") {
-			router.get(constants.NODE_PREFIX + e, handler);
+			router.get(constants.NODE_PREFIX + url, handler);
 		} else if (method === "POST") {
-			router.post(constants.NODE_PREFIX + e, handler);
+			router.post(constants.NODE_PREFIX + url, handler);
 		} else if (method === "PUT") {
-			router.put(constants.NODE_PREFIX + e, handler);
+			router.put(constants.NODE_PREFIX + url, handler);
 		} else if (method === "DELETE") {
-			router.delete(constants.NODE_PREFIX + e, handler);
+			router.delete(constants.NODE_PREFIX + url, handler);
 		}
 	}
 	app.use(router);
@@ -50,7 +50,7 @@ async function serverMain() {
 	for (let p of Object.keys(pages)) {
 		let filename = pages[p];
 		let page = "app/Web/" + filename;
-		app.use(constants.WEB_PREFIX + p, express.static(page));
+		app.use(constants.WEB_PREFIX + p, express.static("."));
 	}
 
 	console.log("[+] Start HTTP server");
