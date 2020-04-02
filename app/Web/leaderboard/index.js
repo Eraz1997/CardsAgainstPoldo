@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $timeout, $http, $window, $location) {
+angular.module("app.leaderboard", [])
+	.controller("leaderboardController", function($scope, $timeout, $http, $window, $location) {
 
 		let getWinner = async function() {
 			try {
@@ -16,7 +16,7 @@ angular.module("app", [])
 		};
 
 		$scope.nickname = $location.search().nickname;
-		await getWinner();
+		getWinner();
 
 		let getOtherPlayers = async function() {
 			try {
@@ -38,13 +38,13 @@ angular.module("app", [])
 		$scope.goHome = async function() {
 			try {
 				await $http.delete("/api/user?userNickname=" + $scope.nickname);
-				$window.location.replace("/home");
+				$location.path("/home");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.err);
 			}
 		};
 
-		await getOtherPlayers();
+		getOtherPlayers();
 
 	});

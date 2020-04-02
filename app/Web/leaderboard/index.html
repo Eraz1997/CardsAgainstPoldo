@@ -1,65 +1,46 @@
-<!doctype html>
-<html ng-app="app">
+<div class="leaderboard-content">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+  <h1>Classifica</h1>
+  <h2>Speriamo non abbia vinto Gu</h2>
 
-<body>
+  <table>
+    <tr>
+      <td>
+        <p class="winner">
+          {{winnerNick}} &#9812;
+        </p>
+      </td>
+      <td>
+        <p class="winner score">
+          {{winnerScore}}
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p class=otherPlayers
+            ng-repeat="player in otherPlayers"
+            ng-show="player.nickname !== winnerNick">
+          {{player.nickname}}
+        </p>
+      </td>
+      <td>
+        <p class="otherPlayers score"
+            ng-repeat="player in otherPlayers"
+            ng-show="player.nickname !== winnerNick">
+          {{player.points}}
+        </p>
+      </td>
+    </tr>
+  </table>
+  <div class="footerDivider">
 
-  <div ng-controller="controller as app">
-    <div class="content">
-
-      <h1>Classifica</h1>
-      <h2>Speriamo non abbia vinto Gu</h2>
-
-      <table>
-        <tr>
-          <td>
-            <p class="winner">
-              {{winnerNick}} &#9812;
-            </p>
-          </td>
-          <td>
-            <p class="winner score">
-              {{winnerScore}}
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p class=otherPlayers
-                ng-repeat="player in otherPlayers"
-                ng-show="player.nickname !== winnerNick">
-              {{player.nickname}}
-            </p>
-          </td>
-          <td>
-            <p class="otherPlayers score"
-                ng-repeat="player in otherPlayers"
-                ng-show="player.nickname !== winnerNick">
-              {{player.points}}
-            </p>
-          </td>
-        </tr>
-      </table>
-      <div class="footerDivider">
-
-      </div>
-      <div class="footer">
-        <a ng-click="goHome()"
-            class="footer">
-          GIOCA ANCORA BOOMER
-        </a>
-      </div>
-
-    </div>
   </div>
-</body>
+  <div class="footer">
+    <a ng-click="goHome()"
+        class="footer">
+      GIOCA ANCORA BOOMER
+    </a>
+  </div>
 
-</html>
+</div>

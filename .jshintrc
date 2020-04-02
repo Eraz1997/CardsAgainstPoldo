@@ -3,6 +3,6 @@
   "unused": true,
   "esversion": 9,
   "node": true,
-  "predef": ["angular"],
+  "predef": ["angular", "FileReader"],
   "indent": 1
 }

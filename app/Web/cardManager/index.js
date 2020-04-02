@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $http, $window, ) {
+angular.module("app.card", [])
+	.controller("cardController", function($scope, $http, $window, $location) {
 
 		let getCards = async function() {
 			try {
@@ -13,7 +13,7 @@ angular.module("app", [])
 			}
 		};
 
-		await getCards();
+		getCards();
 
 		let sendCard = async function(card) {
 			if (!card.text || card.text === "") {
@@ -86,6 +86,9 @@ angular.module("app", [])
 				$window.alert("Deck vuoto");
 			}
 		};
+		$scope.changeRoute = function(route) {
+			$location.path(route);
+		};
 
 	})
 
@@ -111,4 +114,5 @@ angular.module("app", [])
 				});
 			}
 		};
+
 	});

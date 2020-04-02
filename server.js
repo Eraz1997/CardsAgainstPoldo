@@ -45,13 +45,8 @@ async function serverMain() {
 	}
 	app.use(router);
 
-	console.log("[+] Get pages");
-	const pages = require("./app/Web/pages.js");
-	for (let p of Object.keys(pages)) {
-		let filename = pages[p];
-		let page = "app/Web/" + filename;
-		app.use(constants.WEB_PREFIX + p, express.static("."));
-	}
+	console.log("[+] Load AngularJS application");
+	app.use(express.static("."));
 
 	console.log("[+] Start HTTP server");
 	app.listen(constants.NODE_PORT);

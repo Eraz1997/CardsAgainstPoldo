@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $timeout, $http, $window, $interval) {
+angular.module("app.home", [])
+	.controller("homeController", function($scope, $timeout, $http, $location, $interval) {
 
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
 		let subtitleArray = [
@@ -53,7 +53,7 @@ angular.module("app", [])
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
 					if (getGameStarted.data.started) {
-						$window.location.replace("/game/#!?nickname=" + $scope.nickname);
+						$location.path("/game/" + $scope.nickname);
 					}
 				} catch (err) {
 					console.log(err);
@@ -61,7 +61,7 @@ angular.module("app", [])
 				}
 			}
 		}
-		await polling();
+		polling();
 		$interval(polling, 10000);
 
 		$scope.enterButton_onClick = async function() {
@@ -107,7 +107,7 @@ angular.module("app", [])
 				await $http.post("/api/game", {
 					userNickname: $scope.nickname
 				});
-				$window.location.replace("/game/#!?nickname=" + $scope.nickname);
+				$location.path("/game/" + $scope.nickname);
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
@@ -122,6 +122,10 @@ angular.module("app", [])
 				console.log(err);
 				$scope.nickErr = err.data.error;
 			}
+		};
+
+		$scope.changeRoute = function(route) {
+			$location.path(route);
 		};
 
 	});

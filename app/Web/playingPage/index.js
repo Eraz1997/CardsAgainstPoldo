@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $http, $location, $window, $timeout) {
+angular.module("app.game", [])
+	.controller("gameController", function($scope, $http, $location, $window, $timeout) {
 
 
 
@@ -52,7 +52,7 @@ angular.module("app", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					$location.path("/leaderboard/" + $scope.player.nickname);
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
@@ -74,7 +74,7 @@ angular.module("app", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					$location.path("/leaderboard/" + $scope.player.nickname);
 				}
 				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
 				let blackCard = (await $http.get("/api/blackCard")).data;
@@ -125,12 +125,12 @@ angular.module("app", [])
 			applyToDom();
 		};
 
-		await init();
+		init();
 
 		$scope.leaveGame = async function() {
 			try {
 				await $http.delete("/api/user?userNickname=" + $scope.player.nickname);
-				$window.location.replace("/home");
+				$location.path("/home");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -143,7 +143,7 @@ angular.module("app", [])
 				await $http.post("/api/gameEnded", {
 					userNickname: $scope.player.nickname
 				});
-				$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+				$location.path("/leaderboard/" + $scope.player.nickname);
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -169,7 +169,7 @@ angular.module("app", [])
 				try {
 					let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 					if (gameEnded) {
-						$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+						$location.path("/leaderboard/" + $scope.player.nickname);
 					}
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,

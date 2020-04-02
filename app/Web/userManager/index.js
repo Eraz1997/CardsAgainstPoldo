@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $timeout, $http, $window, $interval) {
+angular.module("app.userManager", [])
+	.controller("userManagerController", function($scope, $timeout, $http, $window, $interval) {
 
 		$scope.nickErr = "";
 		$scope.playersErr = "";
@@ -27,7 +27,7 @@ angular.module("app", [])
 				}
 			}
 		}
-		await polling();
+		polling();
 		$interval(polling, 1000);
 
 		$scope.removeButton_onClick = async function(player) {

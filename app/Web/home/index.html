@@ -1,88 +1,70 @@
-<!doctype html>
-<html ng-app="app">
+<div class="home-content">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+  <h1>Cards Against Poldo</h1>
+  <h2>{{subtitle}}</h2>
 
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
+  <p class="errorMsg">{{nickErr}}</p>
+  <form class="nickInput"
+      name="nickInputForm"
+      novalidate
+      ng-model="nickForm"
+      ng-show="!playerJoined">
+    <input type="text"
+        required
+        name="textbox"
+        ng-model="nickname"
+        ng-maxlength=20
+        ng-disabled="nickInputDisabled"
+        autocomplete="off" />
+    <input type="button"
+        value="Entra"
+        ng-disabled="nickInputDisabled"
+        ng-click="enterButton_onClick()" />
+  </form>
+  <form class="playerJoined">
+    <input type="button"
+        value="Inizia partita"
+        ng-click="startButton_onClick()"
+        ng-show="playerJoined && nickname === master && players.length >= 2" />
+    <input type="button"
+        value="Esci"
+        ng-click="exitButton_onClick()"
+        ng-show="playerJoined" />
+  </form>
 
-      <h1>Cards Against Poldo</h1>
-      <h2>{{subtitle}}</h2>
-
-      <p class="errorMsg">{{nickErr}}</p>
-      <form class="nickInput"
-          name="nickInputForm"
-          novalidate
-          ng-model="nickForm"
-          ng-show="!playerJoined">
-        <input type="text"
-            required
-            name="textbox"
-            ng-model="nickname"
-            ng-maxlength=20
-            ng-disabled="nickInputDisabled"
-            autocomplete="off" />
-        <input type="button"
-            value="Entra"
-            ng-disabled="nickInputDisabled"
-            ng-click="enterButton_onClick()" />
-      </form>
-      <form class="playerJoined">
-        <input type="button"
-            value="Inizia partita"
-            ng-click="startButton_onClick()"
-            ng-show="playerJoined && nickname === master && players.length >= 2" />
-        <input type="button"
-            value="Esci"
-            ng-click="exitButton_onClick()"
-            ng-show="playerJoined" />
-      </form>
-
-      <div>
-        <p ng-show="players.length > 0">
-          Giocatori connessi:
+  <div>
+    <p ng-show="players.length > 0">
+      Giocatori connessi:
+    </p>
+    <p ng-show="players.length === 0">
+      Nessun giocatore connesso
+    </p>
+    <div class="playerList"
+        ng-show="players.length > 0">
+      <div class="player"
+          ng-repeat="player in players">
+        <p class="name master"
+            ng-show="player === master">
+          {{player}} &#9733;
         </p>
-        <p ng-show="players.length === 0">
-          Nessun giocatore connesso
+        <p class="name"
+            ng-show="player !== master">
+          {{player}}
         </p>
-        <div class="playerList"
-            ng-show="players.length > 0">
-          <div class="player"
-              ng-repeat="player in players">
-            <p class="name master"
-              ng-show="player === master">
-              {{player}} &#9733;
-            </p>
-            <p class="name"
-                ng-show="player !== master">
-              {{player}}
-            </p>
-            <input class="removeButton"
-                type="button"
-                value="Rimuovi"
-                ng-show="playerJoined && nickname === master && player !== nickname"
-                ng-click="removeButton_onClick(player)" />
-          </div>
-        </div>
-      </div>
-      <p class="errorMsg">{{playersErr}}</p>
-
-      <div class="footer">
-        <a href="/cardManager"
-            class="footer">
-          Gestisci carte
-        </a>
+        <input class="removeButton"
+            type="button"
+            value="Rimuovi"
+            ng-show="playerJoined && nickname === master && player !== nickname"
+            ng-click="removeButton_onClick(player)" />
       </div>
     </div>
   </div>
-</body>
+  <p class="errorMsg">{{playersErr}}</p>
 
-</html>
+  <div class="footer">
+    <a ng-click="changeRoute('/cardManager')"
+        class="footer">
+      Gestisci carte
+    </a>
+  </div>
+</div>

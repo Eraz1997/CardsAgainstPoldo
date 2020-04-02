@@ -1,70 +1,71 @@
-<!doctype html>
-<html ng-app="app">
-
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
-
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
-      <h1>Card Manager</h1>
-      <div class="editor">
-        <div class="panel-container">
-          <div class="panel white">
-            <div class="list-container">
-              <div class="list">
-                <div class="card white" ng-repeat="card in whiteDeck">
-                  {{card.text}}
-                  <div class="delete-button" ng-click="deleteCard(card)">
-                    <span>Elimina</span>
-                  </div>
-                </div>
+<div class="card-content">
+  <h1>Card Manager</h1>
+  <div class="editor">
+    <div class="panel-container">
+      <div class="panel white">
+        <div class="list-container">
+          <div class="list">
+            <div class="card white"
+                ng-repeat="card in whiteDeck">
+              {{card.text}}
+              <div class="delete-button"
+                  ng-click="deleteCard(card)">
+                <span>Elimina</span>
               </div>
             </div>
-            <div class="controls">
-            <textarea class="textbox" ng-model="whiteText" ></textarea>
-            <input type="button" class="send-button" ng-click="sendWhite()"  value="Crea nuova carta bianca!"/>
-            </div>
-
-          </div>
-          <div class="panel black">
-            <div class="list-container">
-              <div class="list">
-                <div class="card black" ng-repeat="card in blackDeck">
-                  {{card.text}}
-                  <div class="delete-button" ng-click="deleteCard(card)">
-                    <span>Elimina</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="controls">
-            <textarea class="textbox" ng-model="blackText"></textarea>
-            <input type="button" class="send-button" ng-click="sendBlack()" value="Crea nuova carta nera!" />
-            </div>
-
-          </div>
-
           </div>
         </div>
-        <div class="footer">
-          <a class="footerElement" href="/home">
-            Home
-          </a>
-          <label class="footerElement" for="deckFile">Carica un file di testo:</label>
-          <input class="footerElement" type="file" id="deckFile" name="deckFile" accept=".txt" on-read-file="sendDeck($fileContent)" />
-          <span></span>
+        <div class="controls">
+          <textarea class="textbox"
+              ng-model="whiteText"></textarea>
+          <input type="button"
+              class="send-button"
+              ng-click="sendWhite()"
+              value="Crea nuova carta bianca!" />
         </div>
 
       </div>
+      <div class="panel black">
+        <div class="list-container">
+          <div class="list">
+            <div class="card black"
+                ng-repeat="card in blackDeck">
+              {{card.text}}
+              <div class="delete-button"
+                  ng-click="deleteCard(card)">
+                <span>Elimina</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <textarea class="textbox"
+              ng-model="blackText"></textarea>
+          <input type="button"
+              class="send-button"
+              ng-click="sendBlack()"
+              value="Crea nuova carta nera!" />
+        </div>
+
+      </div>
+
     </div>
   </div>
-</body>
+  <div class="footer">
+    <a class="footerElement"
+        ng-click="changeRoute('/home')">
+      Home
+    </a>
+    <label class="footerElement"
+        for="deckFile">Carica un file di testo:</label>
+    <input class="footerElement"
+        type="file"
+        id="deckFile"
+        name="deckFile"
+        accept=".txt"
+        on-read-file="sendDeck($fileContent)" />
+    <span></span>
+  </div>
 
-</html>
+</div>
+</div>
