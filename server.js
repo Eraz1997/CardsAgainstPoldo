@@ -74,26 +74,31 @@ async function serverMain() {
 		wsRoutes[eventName] = require("./app/WS/" + wsEndpoints[eventName] + ".js");
 	}
 	ws.on("request", function(request) {
-
-		let connection = request.accept("echo-protocol", request.origin);
-		console.log("[!] WS connection accepted");
+		let connection;
+		try {
+			connection = request.accept("cap-protocol", request.origin);
+			console.log("[!] WS connection accepted");
+		} catch (err) {
+			console.log(err);
+		}
 		connection.on("message", function(message) {
-			if (message.type === "utf8") {
-				console.log("[!] WS subscription received: "); // + get event (use a specific language)
-				// route to right wsRoute in wsRoutes, if present
-				let messages = message.utf8Data.split(" ");
-				let username = messages.length > 1 ? messages[0] : null;
-				let eventName = messages.length > 1 ? messages[1] : messages[0];
-				if (wsRoutes[eventName]) {
-					connection.sendUTF(wsRoutes[eventName](username));
-				} else {
-
-					console.log("Received Message: " + message.utf8Data); // mock of response router
-					connection.sendUTF(message.utf8Data); // mock of response router
-					// handle error
-
+			try {
+				if (message.type === "utf8") {
+					console.log("[!] WS subscription received: ");
+					message = JSON.parse(message.utf8Data);
+					//message.data = JSON.parse(message.data);
+					if (wsRoutes[message.event]) {
+						connection.sendUTF(wsRoutes[message.event](message.data));
+					} else {
+						console.log("Received Message: " + JSON.stringify(message)); // mock of response router
+						connection.sendUTF(JSON.stringify(message)); // mock of response router
+						// handle error
+					}
 				}
+			} catch (err) {
+				console.log(err);
 			}
+
 		});
 		connection.on("close", function() { //  reasonCode, description) {
 			console.log("[!] " + connection.remoteAddress + " has lost WS connection.");

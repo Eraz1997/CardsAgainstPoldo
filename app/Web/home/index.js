@@ -1,6 +1,14 @@
 "use strict";
-angular.module("app.home", ["ngCookies"])
-	.controller("homeController", function($scope, $timeout, $http, $location, $interval, $cookies) {
+angular.module("app.home", ["ngCookies", "ngWebsocket"])
+	.controller("homeController", function($scope, $timeout, $http, $location, $interval, $cookies, $websocket) {
+
+		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol"); // how to generaliza localhost???
+		ws.$on("$open", function() {
+				ws.$emit("gameStart", $scope.nickname);
+			})
+			.$on("hello", function(message) {
+				console.log(JSON.stringify(message));
+			});
 
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
 		let subtitleArray = [
