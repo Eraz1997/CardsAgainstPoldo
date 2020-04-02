@@ -16,7 +16,7 @@ angular.module("app", ["ngRoute",
 				templateUrl: "./app/Web/home/index.html",
 				controller: "homeController"
 			})
-			.when("/game/:nickname", {
+			.when("/game", {
 				templateUrl: "./app/Web/playingPage/index.html",
 				controller: "gameController"
 			})
@@ -24,7 +24,7 @@ angular.module("app", ["ngRoute",
 				templateUrl: "./app/Web/cardManager/index.html",
 				controller: "cardController"
 			})
-			.when("/leaderboard/:nickname", {
+			.when("/leaderboard", {
 				templateUrl: "./app/Web/leaderboard/index.html",
 				controller: "leaderboardController"
 			})

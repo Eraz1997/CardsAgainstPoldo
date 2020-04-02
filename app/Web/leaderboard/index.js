@@ -1,10 +1,12 @@
 "use strict";
-angular.module("app.leaderboard", [])
-	.controller("leaderboardController", function($scope, $timeout, $http, $window, $location) {
+angular.module("app.leaderboard", ["ngCookies"])
+	.controller("leaderboardController", function($scope, $timeout, $http, $window, $location, $cookies) {
 
 		let getWinner = async function() {
 			try {
 				let allPlayers = await $http.get("/api/winner");
+				await $http.delete("/api/user?userNickname=" + $scope.nickname);
+				$cookies.remove("nickname");
 
 				$scope.winnerNick = allPlayers.data.winner.nickname;
 				$scope.winnerScore = allPlayers.data.winner.points;
@@ -15,7 +17,7 @@ angular.module("app.leaderboard", [])
 			}
 		};
 
-		$scope.nickname = $location.search().nickname;
+		$scope.nickname = $cookies.get("nickname");
 		getWinner();
 
 		let getOtherPlayers = async function() {
@@ -36,13 +38,7 @@ angular.module("app.leaderboard", [])
 		};
 
 		$scope.goHome = async function() {
-			try {
-				await $http.delete("/api/user?userNickname=" + $scope.nickname);
-				$location.path("/home");
-			} catch (err) {
-				console.log(err);
-				$window.alert(err.data.err);
-			}
+			$location.path("/home");
 		};
 
 		getOtherPlayers();

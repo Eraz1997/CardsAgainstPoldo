@@ -1,8 +1,6 @@
 "use strict";
-angular.module("app.game", [])
-	.controller("gameController", function($scope, $http, $location, $window, $timeout) {
-
-
+angular.module("app.game", ["ngCookies"])
+	.controller("gameController", function($scope, $http, $location, $window, $timeout, $cookies) {
 
 		let applyToDom = function() {
 			if (!$scope.$$phase) {
@@ -27,7 +25,7 @@ angular.module("app.game", [])
 			try {
 				let responses = (await $http.get("/api/responses?userNickname=" + $scope.player.nickname)).data;
 				if (responses.pendingResponses) {
-					$timeout(startCheckingPlayersResponses, 10000);
+					$timeout(startCheckingPlayersResponses, 2000);
 					return;
 				}
 				responses.responses.map(function(response, index) {
@@ -46,17 +44,16 @@ angular.module("app.game", [])
 			applyToDom();
 		};
 
-
 		let startCheckingTurnWinner = async function() {
 
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$location.path("/leaderboard/" + $scope.player.nickname);
+					$location.path("/leaderboard");
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
-					$timeout(startCheckingTurnWinner, 10000);
+					$timeout(startCheckingTurnWinner, 2000);
 				} else {
 					await getGeneralInfos();
 					$scope.turnWinnerCard = (await $http.get("/api/turnWinner")).data;
@@ -74,7 +71,7 @@ angular.module("app.game", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$location.path("/leaderboard/" + $scope.player.nickname);
+					$location.path("/leaderboard");
 				}
 				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
 				let blackCard = (await $http.get("/api/blackCard")).data;
@@ -105,7 +102,7 @@ angular.module("app.game", [])
 		let init = async function() {
 			// set player
 			$scope.player = {
-				nickname: $location.search().nickname
+				nickname: $cookies.get("nickname")
 			};
 
 			//check game started
@@ -131,6 +128,7 @@ angular.module("app.game", [])
 			try {
 				await $http.delete("/api/user?userNickname=" + $scope.player.nickname);
 				$location.path("/home");
+				$cookies.remove("nickname");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -143,7 +141,7 @@ angular.module("app.game", [])
 				await $http.post("/api/gameEnded", {
 					userNickname: $scope.player.nickname
 				});
-				$location.path("/leaderboard/" + $scope.player.nickname);
+				$location.path("/leaderboard");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -169,7 +167,7 @@ angular.module("app.game", [])
 				try {
 					let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 					if (gameEnded) {
-						$location.path("/leaderboard/" + $scope.player.nickname);
+						$location.path("/leaderboard");
 					}
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,

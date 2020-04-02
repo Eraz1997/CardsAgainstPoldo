@@ -1,6 +1,6 @@
 "use strict";
-angular.module("app.home", [])
-	.controller("homeController", function($scope, $timeout, $http, $location, $interval) {
+angular.module("app.home", ["ngCookies"])
+	.controller("homeController", function($scope, $timeout, $http, $location, $interval, $cookies) {
 
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
 		let subtitleArray = [
@@ -21,7 +21,11 @@ angular.module("app.home", [])
 
 		$scope.nickErr = "";
 		$scope.playersErr = "";
-		$scope.nickname = "";
+		$scope.nickname = $cookies.get("nickname");
+		if ($scope.nickname) {
+			$scope.nicknameFromCookie = true;
+		}
+		//if($scope.nickname) {...}
 		$scope.master = null;
 		$scope.players = [];
 		$scope.playerJoined = false;
@@ -35,25 +39,34 @@ angular.module("app.home", [])
 				$scope.players = getUsers.data.users.map(function(user) {
 					return user.nickname;
 				});
-				$scope.master = $scope.players.length ? getUsers.data.users.filter(function(user) {
+				$scope.master = getUsers.data.users.filter(function(user) {
 					return user.isMaster;
-				})[0].nickname : "";
+				})[0];
+				$scope.master = $scope.master ? $scope.master.nickname : "";
 				if (!$scope.players.includes($scope.nickname)) {
 					$scope.playerJoined = false;
 					$scope.nickInputDisabled = false;
+					if ($scope.nicknameFromCookie) {
+						$scope.nicknameFromCookie = false;
+						$cookies.remove("nickname");
+					}
+				} else {
+					$scope.playerJoined = true;
+					$scope.nickInputDisabled = true;
 				}
 			} catch (err) {
 				if (err.status !== -1) {
 					console.log(err);
-					$scope.playersErr = err.data.error;
+					$scope.playersErr = err.data ? err.data.error : "";
 				}
 			}
 
 			if ($scope.playerJoined) {
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
-					if (getGameStarted.data.started) {
-						$location.path("/game/" + $scope.nickname);
+					let getGameEnded = await $http.get("/api/gameEnded");
+					if (getGameStarted.data.started && !getGameEnded.data.ended) {
+						$location.path("/game");
 					}
 				} catch (err) {
 					console.log(err);
@@ -62,7 +75,7 @@ angular.module("app.home", [])
 			}
 		}
 		polling();
-		$interval(polling, 10000);
+		$interval(polling, 2000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo
@@ -82,6 +95,7 @@ angular.module("app.home", [])
 					}); //invia nuovo nome utente
 					$scope.nickErr = "";
 					$scope.playerJoined = true;
+					$cookies.put("nickname", $scope.nickname);
 				} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
 					console.log(err);
 					$scope.nickErr = err.data.error;
@@ -96,6 +110,7 @@ angular.module("app.home", [])
 				$scope.nickErr = "";
 				$scope.playerJoined = false;
 				$scope.nickInputDisabled = false;
+				$cookies.remove("nickname");
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
@@ -107,7 +122,7 @@ angular.module("app.home", [])
 				await $http.post("/api/game", {
 					userNickname: $scope.nickname
 				});
-				$location.path("/game/" + $scope.nickname);
+				$location.path("/game");
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
