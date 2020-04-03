@@ -54,7 +54,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				polling();
 			})
 			.$on("gameStarted", function() {
-				if ($scope.playerJoined) {
+				if ($scope.playerStatus === playerStatusEnum.JOINED) {
 					ws.$emit("~userJoined");
 					ws.$emit("~gameStarted");
 					$location.path("/game");
@@ -77,6 +77,20 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				if ($scope.playerStatus === playerStatusEnum.JOINED && !$scope.players.includes($scope.nickname)) {
 					$scope.playerStatus = playerStatusEnum.NOT_JOINED;
 					if ($scope.nicknameFromCookie) {
+						$scope.nicknameFromCookie = false;
+						$cookies.remove("nickname");
+					}
+				} else if ($scope.nicknameFromCookie) {
+					if ($scope.players.includes($scope.nickname)) {
+						$scope.playerStatus = playerStatusEnum.JOINED;
+						$scope.nicknameFromCookie = false;
+						let gameStarted = (await $http.get("/api/gameStarted")).data.started;
+						if (gameStarted) {
+							$location.path("/game");
+							$scope.$apply();
+							return;
+						}
+					} else {
 						$scope.nicknameFromCookie = false;
 						$cookies.remove("nickname");
 					}
