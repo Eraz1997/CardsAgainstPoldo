@@ -1,7 +1,28 @@
 "use strict";
 angular.module("app", [])
-	.controller("controller", async function($scope, $timeout, $http, $window, $interval) {
+	.constant("playerStatusEnum", {
+		NOT_JOINED: 1,
+		WAITING_JOIN: 2,
+		JOINED: 3,
+		WAITING_LEAVE: 4,
+		buttonText: {
+			1: "Entra",
+			2: "Attendi...",
+			3: "Esci",
+			4: "Attendi..."
+		}
+	})
+	.controller("controller", async function($scope, $timeout, $http, $window, $interval, playerStatusEnum) {
+		// necessario per utilizzarlo anche nell'html
+		$scope.playerStatusEnum = playerStatusEnum;
 
+		// inizializzazioni
+		$scope.playerStatus = playerStatusEnum.NOT_JOINED;
+		$scope.nickErr = "";
+		$scope.playersErr = "";
+		$scope.nickname = "";
+		$scope.master = null;
+		$scope.players = [];
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
 		let subtitleArray = [
 			"Il risultato del non avere davvero un cazzo da fare",
@@ -19,13 +40,8 @@ angular.module("app", [])
 		];
 		$scope.subtitle = subtitleArray[Math.floor(Math.random() * subtitleArray.length)];
 
-		$scope.nickErr = "";
-		$scope.playersErr = "";
-		$scope.nickname = "";
-		$scope.master = null;
-		$scope.players = [];
-		$scope.playerJoined = false;
-		$scope.nickInputDisabled = false;
+		console.log($scope.playerStatus);
+		console.log(playerStatusEnum.buttonText[$scope.playerStatus]);
 
 		async function polling() {
 			try {
@@ -38,9 +54,8 @@ angular.module("app", [])
 				$scope.master = $scope.players.length ? getUsers.data.users.filter(function(user) {
 					return user.isMaster;
 				})[0].nickname : "";
-				if (!$scope.players.includes($scope.nickname)) {
-					$scope.playerJoined = false;
-					$scope.nickInputDisabled = false;
+				if ($scope.playerStatus === playerStatusEnum.JOINED && !$scope.players.includes($scope.nickname)) {
+					$scope.playerStatus = playerStatusEnum.NOT_JOINED;
 				}
 			} catch (err) {
 				if (err.status !== -1) {
@@ -49,7 +64,7 @@ angular.module("app", [])
 				}
 			}
 
-			if ($scope.playerJoined) {
+			if ($scope.playerStatus === playerStatusEnum.JOINED) {
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
 					if (getGameStarted.data.started) {
@@ -64,41 +79,47 @@ angular.module("app", [])
 		await polling();
 		$interval(polling, 10000);
 
-		$scope.enterButton_onClick = async function() {
-			// controlla se il nick è stato inserito e se non è troppo lungo
-			if (!$scope.nickInputForm.$valid) {
-				if ($scope.nickInputForm.$error.required) {
-					$scope.nickErr = "Inserisci un nickname maledetto autista";
-				} else if ($scope.nickInputForm.textbox.$error.maxlength !== undefined) {
-					$scope.nickErr = "È troppo lungo";
-				} else {
-					console.log($scope.nickInputForm.$error);
-				}
-			} else {
-				$scope.nickInputDisabled = true;
-				try {
-					await $http.post("/api/user", {
-						userNickname: $scope.nickname
-					}); //invia nuovo nome utente
-					$scope.nickErr = "";
-					$scope.playerJoined = true;
-				} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
-					console.log(err);
-					$scope.nickErr = err.data.error;
-					$scope.nickInputDisabled = false;
-				}
-			}
-		};
-
-		$scope.exitButton_onClick = async function() {
-			try {
-				await $http.delete("/api/user?userNickname=" + $scope.nickname);
-				$scope.nickErr = "";
-				$scope.playerJoined = false;
-				$scope.nickInputDisabled = false;
-			} catch (err) {
-				console.log(err);
-				$scope.nickErr = err.data.error;
+		$scope.nickButton_onClick = async function() {
+			switch($scope.playerStatus) {
+				case playerStatusEnum.NOT_JOINED:
+					// controlla se il nick è stato inserito e se non è troppo lungo
+					if (!$scope.nickInputForm.$valid) {
+						if ($scope.nickInputForm.$error.required) {
+							$scope.nickErr = "Inserisci un nickname maledetto autista";
+						} else if ($scope.nickInputForm.textbox.$error.maxlength !== undefined) {
+							$scope.nickErr = "È troppo lungo";
+						} else {
+							console.log($scope.nickInputForm.$error);
+						}
+					} else {
+						try {
+							$scope.playerStatus = playerStatusEnum.WAITING_JOIN;
+							await $http.post("/api/user", {
+								userNickname: $scope.nickname
+							}); //invia nuovo nome utente
+							$scope.nickErr = "";
+							$scope.playerStatus = playerStatusEnum.JOINED;
+						} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
+							console.log(err);
+							$scope.nickErr = err.data.error;
+							$scope.playerStatus = playerStatusEnum.NOT_JOINED;
+						}
+					}
+					break;
+				case playerStatusEnum.JOINED:
+					try {
+						$scope.playerStatus = playerStatusEnum.WAITING_LEAVE;
+						await $http.delete("/api/user?userNickname=" + $scope.nickname);
+						$scope.nickErr = "";
+						$scope.playerStatus = playerStatusEnum.NOT_JOINED;
+					} catch (err) {
+						console.log(err);
+						$scope.nickErr = err.data.error;
+						$scope.playerStatus = playerStatusEnum.JOINED;
+					}
+					break;
+				default:
+					break;
 			}
 		};
 

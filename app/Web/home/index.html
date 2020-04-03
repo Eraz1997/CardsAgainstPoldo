@@ -17,63 +17,58 @@
       <h1>Cards Against Poldo</h1>
       <h2>{{subtitle}}</h2>
 
-      <p class="errorMsg">{{nickErr}}</p>
-      <form class="nickInput"
+      <div class="start-button-space">
+        <div class="button start"
+            ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && players.length >= 2"
+            ng-click="startButton_onClick()">
+          Inizia partita
+        </div>
+      </div>
+
+      <p class="err-msg">{{nickErr}}</p>
+      <form class="nick-input"
           name="nickInputForm"
-          novalidate
-          ng-model="nickForm"
-          ng-show="!playerJoined">
-        <input type="text"
+          novalidate>
+        <input class="textbox"
+            type="text"
             required
             name="textbox"
             ng-model="nickname"
             ng-maxlength=20
-            ng-disabled="nickInputDisabled"
+            ng-disabled="playerStatus !== playerStatusEnum.NOT_JOINED"
             autocomplete="off" />
-        <input type="button"
-            value="Entra"
-            ng-disabled="nickInputDisabled"
-            ng-click="enterButton_onClick()" />
-      </form>
-      <form class="playerJoined">
-        <input type="button"
-            value="Inizia partita"
-            ng-click="startButton_onClick()"
-            ng-show="playerJoined && nickname === master && players.length >= 2" />
-        <input type="button"
-            value="Esci"
-            ng-click="exitButton_onClick()"
-            ng-show="playerJoined" />
+        <div class="button join"
+            ng-click="nickButton_onClick()">
+          {{playerStatusEnum.buttonText[playerStatus]}}
+        </div>
       </form>
 
-      <div>
-        <p ng-show="players.length > 0">
-          Giocatori connessi:
-        </p>
-        <p ng-show="players.length === 0">
-          Nessun giocatore connesso
-        </p>
-        <div class="playerList"
-            ng-show="players.length > 0">
-          <div class="player"
-              ng-repeat="player in players">
-            <p class="name master"
-              ng-show="player === master">
-              {{player}} &#9733;
-            </p>
-            <p class="name"
-                ng-show="player !== master">
-              {{player}}
-            </p>
-            <input class="removeButton"
-                type="button"
-                value="Rimuovi"
-                ng-show="playerJoined && nickname === master && player !== nickname"
-                ng-click="removeButton_onClick(player)" />
+      <p ng-if="players.length > 0">
+        Giocatori connessi:
+      </p>
+      <p ng-if="players.length === 0">
+        Nessun giocatore connesso
+      </p>
+      <div class="player-list"
+          ng-if="players.length > 0">
+        <div class="player"
+            ng-repeat="player in players">
+          <p class="name master"
+              ng-if="player === master">
+            {{player}} &#9733;
+          </p>
+          <p class="name"
+              ng-if="player !== master">
+            {{player}}
+          </p>
+          <div class="button remove"
+              ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && player !== nickname"
+              ng-click="removeButton_onClick(player)">
+            Rimuovi
           </div>
         </div>
       </div>
-      <p class="errorMsg">{{playersErr}}</p>
+      <p class="err-msg">{{playersErr}}</p>
 
       <div class="footer">
         <a href="/cardManager"
