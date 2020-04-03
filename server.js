@@ -7,6 +7,9 @@ async function serverMain() {
 	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
 	const wsAcceptedEvents = require("./app/Globals/webSocketEvents.js");
+	const wsUnsubscribeEvents = wsAcceptedEvents.map(function(wsEvent) {
+		return "~" + wsEvent;
+	});
 	const WebSocketServer = require("websocket").server;
 	const http = require("http");
 
@@ -74,7 +77,18 @@ async function serverMain() {
 					if (!message.event) {
 						throw "[!!] Bad WS message format!";
 					}
-					if (!wsAcceptedEvents.includes(message.event)) {
+					if (wsUnsubscribeEvents.includes(message.event)) {
+						let wsEvent = message.event.substring(1);
+						let oldLen = wsEvents[wsEvent].length;
+						wsEvents[wsEvent] = wsEvents[wsEvent].filter(function(client) {
+							return client.connection.remoteAddress !== connection.remoteAddress;
+						});
+						if (oldLen === wsEvents[wsEvent].length) {
+							throw "[!] WS unsubscription failed";
+						}
+						console.log("[!] WS unsubscription: " + wsEvent + " from " + connection.remoteAddress);
+						return;
+					} else if (!wsAcceptedEvents.includes(message.event)) {
 						throw "[!!] Bad WS event!";
 					}
 					console.log("[!] WS subscription received: " + message.event);

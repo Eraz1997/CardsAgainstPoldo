@@ -1,5 +1,7 @@
 "use strict";
 module.exports = [
 	"userJoined",
-	"gameStarted"
+	"gameStarted",
+	"playerResponses",
+	"turnWinner"
 ];

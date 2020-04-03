@@ -89,6 +89,7 @@ module.exports = async function(request, response) {
 		});
 
 		await connection.closeConnection();
+		response.webSocketEvents.sendToAll("turnWinner");
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);

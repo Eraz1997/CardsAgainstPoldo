@@ -18,7 +18,6 @@ angular.module("app.leaderboard", ["ngCookies"])
 		};
 
 		$scope.nickname = $cookies.get("nickname");
-		getWinner();
 
 		let getOtherPlayers = async function() {
 			try {
@@ -41,6 +40,28 @@ angular.module("app.leaderboard", ["ngCookies"])
 			$location.path("/home");
 		};
 
-		getOtherPlayers();
+		let init = async function() {
+			try {
+				let gameStarted = (await $http.get("/api/gameStarted")).data.started;
+				if (!gameStarted) {
+					$location.path("/home");
+					$scope.$apply();
+					return;
+				}
+				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
+				if (!gameEnded) {
+					$location.path("/game");
+					$scope.$apply();
+					return;
+				}
+			} catch (err) {
+				console.log(err);
+			}
+			await getWinner();
+			await getOtherPlayers();
+
+		};
+
+		init();
 
 	});

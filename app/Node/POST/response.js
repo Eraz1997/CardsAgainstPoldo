@@ -62,7 +62,16 @@ module.exports = async function(request, response) {
 			response: cards
 		});
 
+		let players = await connection.models.users.select({}, ["nickname", "response"]);
+		let responses = players.filter(function(player) {
+			return !!player.response && !!player.response.length;
+		});
+
 		await connection.closeConnection();
+
+		if (players.length - 1 === responses.length) {
+			response.webSocketEvents.sendToAll("playerResponses");
+		}
 
 		response.status(200).send({});
 	} catch (err) {

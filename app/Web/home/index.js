@@ -41,7 +41,10 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 			})
 			.$on("gameStarted", function() {
 				if ($scope.playerJoined) {
+					ws.$emit("~userJoined");
+					ws.$emit("~gameStarted");
 					$location.path("/game");
+					$scope.$apply();
 				}
 			});
 
@@ -79,16 +82,17 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
 					let getGameEnded = await $http.get("/api/gameEnded");
-					console.log(getGameEnded)
 					if (getGameStarted.data.started && !getGameEnded.data.ended) {
 						$location.path("/game");
+						ws.$emit("~userJoined");
+						ws.$emit("~gameStarted");
 					}
 				} catch (err) {
 					console.log(err);
 					$scope.playersErr = err.data.error;
 				}
 			}
-			$scope.$digest();
+			$scope.$apply();
 		}
 		polling();
 
@@ -117,6 +121,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 					$scope.nickInputDisabled = false;
 				}
 			}
+			$scope.$digest();
 		};
 
 		$scope.exitButton_onClick = async function() {
@@ -137,7 +142,6 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				await $http.post("/api/game", {
 					userNickname: $scope.nickname
 				});
-				$location.path("/game");
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
