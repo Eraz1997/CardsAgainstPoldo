@@ -40,6 +40,9 @@ module.exports = async function(request, response) {
 			}
 			fullResponses.push(fullResponse);
 		}
+		fullResponses.sort(function() {
+			return 0.5 - Math.random();
+		});
 
 		let pendingResponses = (await connection.models.users.select({}, ["nickname"])).length - 1 - fullResponses.length;
 		if (pendingResponses < 0) {
