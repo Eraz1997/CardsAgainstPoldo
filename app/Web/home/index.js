@@ -45,7 +45,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 		console.log($scope.playerStatus);
 		console.log(playerStatusEnum.buttonText[$scope.playerStatus]);
 
-		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol");
+		let ws = $websocket.$new("ws://ec2-15-188-88-135.eu-west-3.compute.amazonaws.com:3500", "cap-protocol");
 		ws.$on("$open", function() {
 				ws.$emit("userJoined");
 				ws.$emit("gameStarted");
