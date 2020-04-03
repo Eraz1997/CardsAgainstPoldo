@@ -1,26 +1,26 @@
 "use strict";
-module.exports = {
-	// "[URL]": "[GET/POST/DELETE/PUT]/[FILE]"
+module.exports = [
+	// "[GET/POST/DELETE/PUT]/[FILE===URL]"
 
-	"GET/deck": "deck",
-	"GET/gameStarted": "gameStarted",
-	"GET/user": "user",
-	"GET/gameEnded": "gameEnded",
-	"GET/winner": "winner",
-	"GET/users": "users",
-	"GET/blackCard": "blackCard",
-	"GET/responses": "responses",
-	"GET/cards": "cards",
-	"GET/turnWinner": "turnWinner",
-	"GET/turn": "turn",
-	"POST/card": "card",
-	"POST/game": "game",
-	"POST/gameEnded": "gameEnded",
-	"POST/user": "user",
-	"POST/response": "response",
-	"POST/turnWinner": "turnWinner",
-	"DELETE/card": "card",
-	"DELETE/game": "game",
-	"DELETE/forceGame": "forceGame",
-	"DELETE/user": "user"
-};
+	"GET/deck",
+	"GET/gameStarted",
+	"GET/user",
+	"GET/gameEnded",
+	"GET/winner",
+	"GET/users",
+	"GET/blackCard",
+	"GET/responses",
+	"GET/cards",
+	"GET/turnWinner",
+	"GET/turn",
+	"POST/card",
+	"POST/game",
+	"POST/gameEnded",
+	"POST/user",
+	"POST/response",
+	"POST/turnWinner",
+	"DELETE/card",
+	"DELETE/game",
+	"DELETE/forceGame",
+	"DELETE/user"
+];

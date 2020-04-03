@@ -1,12 +1,19 @@
 "use strict";
-angular.module("app", [])
-	.controller("controller", async function($scope, $http, $location, $window, $timeout) {
+angular.module("app.game", ["ngCookies", "ngWebsocket"])
+	.controller("gameController", function($scope, $http, $location, $window, $timeout, $cookies, $websocket) {
 
-
+		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol");
+		ws.$on("$open", function() {})
+			.$on("turnWinner", function() {
+				checkTurnWinner();
+			})
+			.$on("playerResponses", function() {
+				checkPlayerResponses();
+			});
 
 		let applyToDom = function() {
 			if (!$scope.$$phase) {
-				$scope.$digest();
+				$scope.$apply();
 			}
 		};
 
@@ -22,23 +29,26 @@ angular.module("app", [])
 			return fullText.substring(0, fullText.length - 1);
 		};
 
-		let startCheckingPlayersResponses = async function() {
+		let checkPlayerResponses = async function() {
 
 			try {
 				let responses = (await $http.get("/api/responses?userNickname=" + $scope.player.nickname)).data;
 				if (responses.pendingResponses) {
-					$timeout(startCheckingPlayersResponses, 10000);
 					return;
 				}
 				responses.responses.map(function(response, index) {
 					response.index = index;
 					return response;
 				});
+				ws.$emit("~playerResponses");
 				$scope.responses = responses.responses;
+				if (!$scope.responses.length) {
+					await $scope.leaveGame();
+					return;
+				}
 				$scope.watchingPlayerResponses = true;
 				$scope.currentResponse = $scope.responses[0];
 				$scope.currentResponse.fullText = getFullText($scope.currentResponse);
-
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
@@ -46,22 +56,24 @@ angular.module("app", [])
 			applyToDom();
 		};
 
-
-		let startCheckingTurnWinner = async function() {
+		let checkTurnWinner = async function() {
 
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					ws.$emit("~playerResponses");
+					ws.$emit("~turnWinner");
+					$location.path("/leaderboard");
 				}
 				let newWinner = (await $http.get("/api/turnWinner")).data;
 				if (newWinner.turn === $scope.turn) {
-					$timeout(startCheckingTurnWinner, 10000);
+					return;
 				} else {
 					await getGeneralInfos();
 					$scope.turnWinnerCard = (await $http.get("/api/turnWinner")).data;
 					$scope.turnWinnerCard.fullText = getFullText($scope.turnWinnerCard);
 					$scope.watchingTurnWinner = true;
+					ws.$emit("~turnWinner");
 				}
 			} catch (err) {
 				console.log(err);
@@ -74,7 +86,11 @@ angular.module("app", [])
 			try {
 				let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				if (gameEnded) {
-					$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+					ws.$emit("~turnWinner");
+					ws.$emit("~playerResponses");
+					$location.path("/leaderboard");
+					applyToDom();
+					return;
 				}
 				let player = (await $http.get("/api/user?userNickname=" + $scope.player.nickname)).data;
 				let blackCard = (await $http.get("/api/blackCard")).data;
@@ -96,16 +112,16 @@ angular.module("app", [])
 			applyToDom();
 
 			if ($scope.player.isMaster) {
-				startCheckingPlayersResponses();
+				ws.$emit("playerResponses");
 			} else if ($scope.player.response.length === $scope.blackCard.numberOfResponses) {
-				startCheckingTurnWinner();
+				ws.$emit("turnWinner");
 			}
 		};
 
 		let init = async function() {
 			// set player
 			$scope.player = {
-				nickname: $location.search().nickname
+				nickname: $cookies.get("nickname")
 			};
 
 			//check game started
@@ -116,6 +132,9 @@ angular.module("app", [])
 				$window.alert(err.data.error);
 			}
 			if (!$scope.gameStarted) {
+				ws.$emit("~playerResponses");
+				ws.$emit("~turnWinner");
+				$location.path("/home");
 				applyToDom();
 				return;
 			}
@@ -125,16 +144,20 @@ angular.module("app", [])
 			applyToDom();
 		};
 
-		await init();
+		init();
 
 		$scope.leaveGame = async function() {
 			try {
 				await $http.delete("/api/user?userNickname=" + $scope.player.nickname);
-				$window.location.replace("/home");
+				ws.$emit("~playerResponses");
+				ws.$emit("~turnWinner");
+				$location.path("/home");
+				$cookies.remove("nickname");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
 			}
+			applyToDom();
 		};
 
 		$scope.endGame = async function() {
@@ -143,11 +166,14 @@ angular.module("app", [])
 				await $http.post("/api/gameEnded", {
 					userNickname: $scope.player.nickname
 				});
-				$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+				ws.$emit("~playerResponses");
+				ws.$emit("~turnWinner");
+				$location.path("/leaderboard");
 			} catch (err) {
 				console.log(err);
 				$window.alert(err.data.error);
 			}
+			applyToDom();
 		};
 
 		$scope.changeCurrentResponse = async function(index) {
@@ -169,13 +195,15 @@ angular.module("app", [])
 				try {
 					let gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 					if (gameEnded) {
-						$window.location.replace("/leaderboard/#!?nickname=" + $scope.player.nickname);
+						ws.$emit("~playerResponses");
+						ws.$emit("~turnWinner");
+						$location.path("/leaderboard");
 					}
 					await $http.post("/api/response", {
 						userNickname: $scope.player.nickname,
 						cards: $scope.player.response
 					});
-					startCheckingTurnWinner();
+					ws.$emit("turnWinner");
 				} catch (err) {
 					console.log(err);
 					$window.alert(err.data.error);

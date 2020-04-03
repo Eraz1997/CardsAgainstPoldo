@@ -1,5 +1,5 @@
 "use strict";
-angular.module("app", [])
+angular.module("app.home", ["ngCookies", "ngWebsocket"])
 	.constant("playerStatusEnum", {
 		NOT_JOINED: 1,
 		WAITING_JOIN: 2,
@@ -12,15 +12,17 @@ angular.module("app", [])
 			4: "Attendi..."
 		}
 	})
-	.controller("controller", async function($scope, $timeout, $http, $window, $interval, playerStatusEnum) {
-		// necessario per utilizzarlo anche nell'html
-		$scope.playerStatusEnum = playerStatusEnum;
+	.controller("homeController", function($scope, $timeout, $http, $location, $interval, $cookies, $websocket, playerStatusEnum) {
 
+		$scope.playerStatusEnum = playerStatusEnum;
 		// inizializzazioni
 		$scope.playerStatus = playerStatusEnum.NOT_JOINED;
 		$scope.nickErr = "";
 		$scope.playersErr = "";
-		$scope.nickname = "";
+		$scope.nickname = $cookies.get("nickname");
+		if ($scope.nickname) {
+			$scope.nicknameFromCookie = true;
+		}
 		$scope.master = null;
 		$scope.players = [];
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
@@ -43,6 +45,23 @@ angular.module("app", [])
 		console.log($scope.playerStatus);
 		console.log(playerStatusEnum.buttonText[$scope.playerStatus]);
 
+		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol");
+		ws.$on("$open", function() {
+				ws.$emit("userJoined");
+				ws.$emit("gameStarted");
+			})
+			.$on("userJoined", function() {
+				polling();
+			})
+			.$on("gameStarted", function() {
+				if ($scope.playerJoined) {
+					ws.$emit("~userJoined");
+					ws.$emit("~gameStarted");
+					$location.path("/game");
+					$scope.$apply();
+				}
+			});
+
 		async function polling() {
 			try {
 				$scope.gameEnded = (await $http.get("/api/gameEnded")).data.ended;
@@ -51,36 +70,44 @@ angular.module("app", [])
 				$scope.players = getUsers.data.users.map(function(user) {
 					return user.nickname;
 				});
-				$scope.master = $scope.players.length ? getUsers.data.users.filter(function(user) {
+				$scope.master = getUsers.data.users.filter(function(user) {
 					return user.isMaster;
-				})[0].nickname : "";
+				})[0];
+				$scope.master = $scope.master ? $scope.master.nickname : "";
 				if ($scope.playerStatus === playerStatusEnum.JOINED && !$scope.players.includes($scope.nickname)) {
 					$scope.playerStatus = playerStatusEnum.NOT_JOINED;
+					if ($scope.nicknameFromCookie) {
+						$scope.nicknameFromCookie = false;
+						$cookies.remove("nickname");
+					}
 				}
 			} catch (err) {
 				if (err.status !== -1) {
 					console.log(err);
-					$scope.playersErr = err.data.error;
+					$scope.playersErr = err.data ? err.data.error : "";
 				}
 			}
 
 			if ($scope.playerStatus === playerStatusEnum.JOINED) {
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
-					if (getGameStarted.data.started) {
-						$window.location.replace("/game/#!?nickname=" + $scope.nickname);
+					let getGameEnded = await $http.get("/api/gameEnded");
+					if (getGameStarted.data.started && !getGameEnded.data.ended) {
+						$location.path("/game");
+						ws.$emit("~userJoined");
+						ws.$emit("~gameStarted");
 					}
 				} catch (err) {
 					console.log(err);
 					$scope.playersErr = err.data.error;
 				}
 			}
+			$scope.$apply();
 		}
-		await polling();
-		$interval(polling, 10000);
+		polling();
 
 		$scope.nickButton_onClick = async function() {
-			switch($scope.playerStatus) {
+			switch ($scope.playerStatus) {
 				case playerStatusEnum.NOT_JOINED:
 					// controlla se il nick è stato inserito e se non è troppo lungo
 					if (!$scope.nickInputForm.$valid) {
@@ -99,6 +126,7 @@ angular.module("app", [])
 							}); //invia nuovo nome utente
 							$scope.nickErr = "";
 							$scope.playerStatus = playerStatusEnum.JOINED;
+							$cookies.put("nickname", $scope.nickname);
 						} catch (err) { //se ci sono problemi nella post (nick già in uso ad es.) rimane tutto così e mostra errore
 							console.log(err);
 							$scope.nickErr = err.data.error;
@@ -112,6 +140,7 @@ angular.module("app", [])
 						await $http.delete("/api/user?userNickname=" + $scope.nickname);
 						$scope.nickErr = "";
 						$scope.playerStatus = playerStatusEnum.NOT_JOINED;
+						$cookies.remove("nickname");
 					} catch (err) {
 						console.log(err);
 						$scope.nickErr = err.data.error;
@@ -128,7 +157,6 @@ angular.module("app", [])
 				await $http.post("/api/game", {
 					userNickname: $scope.nickname
 				});
-				$window.location.replace("/game/#!?nickname=" + $scope.nickname);
 			} catch (err) {
 				console.log(err);
 				$scope.nickErr = err.data.error;
@@ -143,6 +171,10 @@ angular.module("app", [])
 				console.log(err);
 				$scope.nickErr = err.data.error;
 			}
+		};
+
+		$scope.changeRoute = function(route) {
+			$location.path(route);
 		};
 
 	});

@@ -1,169 +1,148 @@
-body,
-html {
-  background-color: #000000;
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: Helvetica, Arial, sans-serif;
+  position: relative;
 
-  .ng-scope {
-    display: block;
-    align-items: center;
+  h1 {
+    line-height: 0.5vw;
+    font-weight: bold;
+    font-size: 5vw;
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+    height: 10vh;
+  }
+
+  .editor {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     width: 100%;
-    height: 100%;
+    height: 85vh;
     position: relative;
 
-    .content {
+    .panel-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      height: 100%;
+      flex-direction: row;
       position: relative;
-
-      h1 {
-        line-height: 0.5vw;
-        font-weight: bold;
-        font-size: 5vw;
-        text-align: center;
-        color: #ffffff;
-        position: relative;
-        height: 10vh;
+      height: 100%;
+      @media (max-width: 750px) {
+        flex-direction: column;
       }
 
-      .editor {
+      .panel {
         display: flex;
         flex-direction: column;
-        flex: 1;
-        width: 100%;
-        height: 85vh;
+        flex: 50%;
+        padding: 0 15px;
         position: relative;
+        height: 100%;
 
-        .panel-container {
+        .list-container {
+          overflow-y: scroll;
+          height: 100%;
+          flex: 0 0 600px;
+
+          .list {
+            display: flex;
+            flex-direction: column;
+            overflow-y: visible;
+            position: relative;
+            width: 100%;
+            //padding: 10px;
+            .card {
+              border-width: 4px;
+              border-radius: 12px;
+              width: 100%;
+              flex: 0 0 60px;
+              margin: 5px 0;
+              border-style: solid;
+              border-color: white;
+              box-sizing: border-box;
+              //margin-bottom: 6px;
+              .delete-button {
+                position: absolute;
+                right: 0;
+                top: 0;
+                background-color: red;
+                font-weight: bold;
+                border-radius: 6px;
+                width: auto;
+                //padding: 3px;
+                height: 30px;
+                color: white;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+              }
+
+              &:hover {
+                .delete-button {
+                  display: flex;
+                }
+              }
+
+              &.white {
+                background-color: white;
+                color: black;
+              }
+
+              &.black {
+                background-color: black;
+                color: white;
+              }
+            }
+          }
+        }
+
+        .controls {
+          margin: 10px 0;
           display: flex;
           flex-direction: row;
           position: relative;
-          height: 100%;
+          flex-basis: 20px;
 
-          @media (max-width: 750px) {
-            flex-direction: column;
+          .textbox {
+            flex: 80%;
+            overflow-wrap: break-word;
+            resize: none;
+            margin-right: 10px;
           }
 
-          .panel {
-            display: flex;
-            flex-direction: column;
-            flex: 50%;
-            padding: 0 15px;
-            position: relative;
-            height: 100%;
-
-            .list-container {
-              overflow-y: scroll;
-              height: 100%;
-              flex: 0 0 600px;
-
-              .list {
-                display: flex;
-                flex-direction: column;
-                overflow-y: visible;
-                position: relative;
-                width: 100%;
-                //padding: 10px;
-
-                .card {
-                  border-width: 4px;
-                  border-radius: 12px;
-                  width: 100%;
-                  flex: 0 0 60px;
-                  margin: 5px 0;
-                  border-style: solid;
-                  border-color: white;
-                  box-sizing: border-box;
-                  //margin-bottom: 6px;
-
-                  .delete-button {
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    background-color: red;
-                    font-weight: bold;
-                    border-radius: 6px;
-                    width: auto;
-                    //padding: 3px;
-                    height: 30px;
-                    color: white;
-                    display: none;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                  }
-
-                  &:hover {
-                    .delete-button {
-                      display: flex;
-                    }
-                  }
-
-                  &.white {
-                    background-color: white;
-                    color: black;
-                  }
-
-                  &.black {
-                    background-color: black;
-                    color: white;
-                  }
-                }
-              }
-            }
-
-            .controls {
-              margin: 10px 0;
-              display: flex;
-              flex-direction: row;
-              position: relative;
-              flex-basis: 20px;
-
-              .textbox {
-                flex: 80%;
-                overflow-wrap: break-word;
-                resize: none;
-                margin-right: 10px;
-              }
-
-              .send-button {
-              }
-            }
-
-            &.white {}
-
-            &.black {}
-          }
+          .send-button {}
         }
+
+        &.white {}
+
+        &.black {}
       }
+    }
+  }
 
-      .footer {
-        font-family: Helvetica, Arial, sans-serif;
-        position: relative;
-        width: 100%;
-        height: 5vh;
-        flex: 0 0 35px;
-        justify-content: center;
-        align-items: center;
-        display: flex;
+  .footer {
+    font-family: Helvetica, Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    height: 5vh;
+    flex: 0 0 35px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
 
-        .footerElement {
-          color: white;
-          flex: 0 0 auto;
-          position: relative;
-          margin-left: 10px;
-        }
+    .footerElement {
+      color: white;
+      flex: 0 0 auto;
+      position: relative;
+      margin-left: 10px;
+    }
 
-        span {
-          flex: 1;
-        }
-      }
+    span {
+      flex: 1;
     }
   }
 }

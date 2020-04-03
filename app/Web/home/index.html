@@ -1,83 +1,65 @@
-<!doctype html>
-<html ng-app="app">
+<div class="home-content">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+  <h1>Cards Against Poldo</h1>
+  <h2>{{subtitle}}</h2>
 
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
+  <div class="start-button-space">
+    <div class="button start"
+        ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && players.length >= 2"
+        ng-click="startButton_onClick()">
+      Inizia partita
+    </div>
+  </div>
 
-      <h1>Cards Against Poldo</h1>
-      <h2>{{subtitle}}</h2>
+  <p class="err-msg">{{nickErr}}</p>
+  <form class="nick-input"
+      name="nickInputForm"
+      novalidate>
+    <input class="textbox"
+        type="text"
+        required
+        name="textbox"
+        ng-model="nickname"
+        ng-maxlength=20
+        ng-disabled="playerStatus !== playerStatusEnum.NOT_JOINED"
+        autocomplete="off" />
+    <div class="button join"
+        ng-click="nickButton_onClick()">
+      {{playerStatusEnum.buttonText[playerStatus]}}
+    </div>
+  </form>
 
-      <div class="start-button-space">
-        <div class="button start"
-            ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && players.length >= 2"
-            ng-click="startButton_onClick()">
-          Inizia partita
-        </div>
-      </div>
-
-      <p class="err-msg">{{nickErr}}</p>
-      <form class="nick-input"
-          name="nickInputForm"
-          novalidate>
-        <input class="textbox"
-            type="text"
-            required
-            name="textbox"
-            ng-model="nickname"
-            ng-maxlength=20
-            ng-disabled="playerStatus !== playerStatusEnum.NOT_JOINED"
-            autocomplete="off" />
-        <div class="button join"
-            ng-click="nickButton_onClick()">
-          {{playerStatusEnum.buttonText[playerStatus]}}
-        </div>
-      </form>
-
-      <p ng-if="players.length > 0">
-        Giocatori connessi:
+  <p ng-if="players.length > 0">
+    Giocatori connessi:
+  </p>
+  <p ng-if="players.length === 0">
+    Nessun giocatore connesso
+  </p>
+  <div class="player-list"
+      ng-if="players.length > 0">
+    <div class="player"
+        ng-repeat="player in players">
+      <p class="name master"
+          ng-if="player === master">
+        {{player}} &#9733;
       </p>
-      <p ng-if="players.length === 0">
-        Nessun giocatore connesso
+      <p class="name"
+          ng-if="player !== master">
+        {{player}}
       </p>
-      <div class="player-list"
-          ng-if="players.length > 0">
-        <div class="player"
-            ng-repeat="player in players">
-          <p class="name master"
-              ng-if="player === master">
-            {{player}} &#9733;
-          </p>
-          <p class="name"
-              ng-if="player !== master">
-            {{player}}
-          </p>
-          <div class="button remove"
-              ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && player !== nickname"
-              ng-click="removeButton_onClick(player)">
-            Rimuovi
-          </div>
-        </div>
-      </div>
-      <p class="err-msg">{{playersErr}}</p>
-
-      <div class="footer">
-        <a href="/cardManager"
-            class="footer">
-          Gestisci carte
-        </a>
+      <div class="button remove"
+          ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && player !== nickname"
+          ng-click="removeButton_onClick(player)">
+        Rimuovi
       </div>
     </div>
   </div>
-</body>
+  <p class="err-msg">{{playersErr}}</p>
 
-</html>
+  <div class="footer">
+    <a ng-click="changeRoute('/cardManager')"
+        class="footer">
+      Gestisci carte
+    </a>
+  </div>
+</div>

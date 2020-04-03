@@ -49,6 +49,7 @@ module.exports = async function(request, response) {
 			nickname: userNickname
 		});
 		await connection.closeConnection();
+		response.webSocketEvents.sendToAll("userJoined");
 
 		response.status(200).send({});
 	} catch (err) {

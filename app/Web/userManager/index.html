@@ -1,56 +1,38 @@
-<!doctype html>
-<html ng-app="app">
+<div class="user-manager-content">
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
-  <script src="index.js"></script>
-  <link rel="stylesheet/less"
-      href="index.less"
-      type="text/css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
-</head>
+  <h1>Cards Against Poldo</h1>
+  <h2>User Manager</h2>
 
-<body>
-  <div ng-controller="controller as app">
-    <div class="content">
-
-      <h1>Cards Against Poldo</h1>
-      <h2>User Manager</h2>
-
-      <div>
-        <p ng-show="players.length > 0">
-          Giocatori connessi:
+  <div>
+    <p ng-show="players.length > 0">
+      Giocatori connessi:
+    </p>
+    <p ng-show="players.length === 0">
+      Nessun giocatore connesso
+    </p>
+    <div class="playerList"
+        ng-show="players.length > 0">
+      <div class="player"
+          ng-repeat="player in players">
+        <p class="name master"
+            ng-show="player === master">
+          {{player}} &#9733;
         </p>
-        <p ng-show="players.length === 0">
-          Nessun giocatore connesso
+        <p class="name"
+            ng-show="player !== master">
+          {{player}}
         </p>
-        <div class="playerList"
-            ng-show="players.length > 0">
-          <div class="player"
-              ng-repeat="player in players">
-            <p class="name master"
-                ng-show="player === master">
-              {{player}} &#9733;
-            </p>
-            <p class="name"
-              ng-show="player !== master">
-              {{player}}
-            </p>
-            <input class="removeButton"
-                type="button"
-                value="Rimuovi"
-                ng-click="removeButton_onClick(player)" />
-          </div>
-        </div>
-      </div>
-      <p class="errorMsg">{{playersErr}}</p>
-
-      <div class="staccatutto"
-          ng-click="forceCloseGame()">
-        <span class="staccatutto-text"> STACCA STACCAAAAA </span>
+        <input class="removeButton"
+            type="button"
+            value="Rimuovi"
+            ng-click="removeButton_onClick(player)" />
       </div>
     </div>
   </div>
-</body>
+  <p class="errorMsg">{{playersErr}}</p>
 
-</html>
+  <div class="staccatutto"
+      ng-click="forceCloseGame()">
+    <span class="staccatutto-text"> STACCA STACCAAAAA </span>
+  </div>
+</div>

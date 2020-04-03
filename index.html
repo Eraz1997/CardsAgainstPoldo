@@ -1,0 +1,38 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+
+  <!-- Components -->
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/angular-route/angular-route.js"></script>
+  <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="/bower_components/ng-websocket/ng-websocket.js"></script>
+
+  <!-- Pages -->
+  <script src="./app/Web/cardManager/index.js"></script>
+  <script src="./app/Web/home/index.js"></script>
+  <script src="./app/Web/leaderboard/index.js"></script>
+  <script src="./app/Web/playingPage/index.js"></script>
+  <script src="./app/Web/userManager/index.js"></script>
+
+  <!-- App scripts -->
+  <script src="./app/Web/main.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet/less"
+      href="./app/Web/style.less"
+      type="text/css" />
+  <script src="/bower_components/less/dist/less.js"></script>
+
+</head>
+
+<!-- App -->
+
+<body>
+  <div ng-view
+      class="application-view">
+  </div>
+</body>
+
+</html>
