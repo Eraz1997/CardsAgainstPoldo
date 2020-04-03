@@ -33,6 +33,7 @@ module.exports = async function(request, response) {
 			isStarted: true
 		});
 		await connection.closeConnection();
+		response.webSocketEvents.sendToAll("gameStarted");
 
 		response.status(200).send({});
 	} catch (err) {

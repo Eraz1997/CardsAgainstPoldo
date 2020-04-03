@@ -89,10 +89,10 @@ module.exports = async function(request, response) {
 			response: null
 		});
 
-
-		//console.log(await connection.models.users.select({}));
-		//console.log(isMaster);
 		await connection.closeConnection();
+		response.webSocketEvents.sendToAll("userJoined");
+
+
 		response.status(200).send({});
 	} catch (err) {
 		console.log(err);

@@ -6,10 +6,116 @@ async function serverMain() {
 	const dbManager = require("./app/Globals/dbManager.js");
 	const bodyParser = require("body-parser");
 	const constants = require("./app/Globals/constants.js");
+	const wsAcceptedEvents = require("./app/Globals/webSocketEvents.js");
 	const WebSocketServer = require("websocket").server;
 	const http = require("http");
 
-	console.log("[+] Init app");
+
+	console.log("[+] Init WebSocket server");
+
+	let wsServer = http.createServer(function(request, response) {
+		console.log("[!] Received HTTP request in WS port");
+		response.writeHead(404);
+		response.end();
+	});
+
+	console.log("[+] Start WebSocket server");
+	wsServer.listen(constants.WEB_SOCKET_PORT);
+	let ws = new WebSocketServer({
+		httpServer: wsServer,
+		autoAcceptConnections: false
+	});
+
+	console.log("[+] Configure WS events");
+
+	let wsEvents = {};
+	wsEvents.sendToAll = function(eventName, data) {
+		if (eventName === "sendToAll") {
+			return;
+		}
+		for (let client of wsEvents[eventName]) {
+			console.log("[!] WS response to " + client.connection.remoteAddress + ": " + eventName);
+			client.connection.sendUTF(JSON.stringify({
+				event: eventName,
+				data: data
+			}));
+		}
+	};
+
+	let sendFactory = function(connection, eventName) {
+		return function(data) {
+			console.log("[!] WS response to all: " + eventName);
+			connection.sendUTF(JSON.stringify({
+				event: eventName,
+				data: data
+			}));
+		};
+	};
+
+	ws.on("request", function(request) {
+
+		let connection;
+
+		try {
+			if (!request.protocolFullCaseMap["cap-protocol"]) {
+				request.reject();
+				throw "[!!] Bad WS protocol!";
+			}
+
+			connection = request.accept("cap-protocol", request.origin);
+			console.log("[!] WS connection accepted");
+
+			connection.on("message", function(message) {
+				try {
+					if (message.type !== "utf8") {
+						throw "[!!] Bas WS message format!";
+					}
+					message = JSON.parse(message.utf8Data);
+					if (!message.event) {
+						throw "[!!] Bad WS message format!";
+					}
+					if (!wsAcceptedEvents.includes(message.event)) {
+						throw "[!!] Bad WS event!";
+					}
+					console.log("[!] WS subscription received: " + message.event);
+
+					if (wsEvents[message.event]) {
+						wsEvents[message.event].push({
+							connection: connection,
+							send: sendFactory(connection, message.event),
+							nickname: message.data || ""
+						});
+					} else {
+						wsEvents[message.event] = [{
+							connection: connection,
+							send: sendFactory(connection, message.event),
+							nickname: message.data || ""
+						}];
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			});
+
+			connection.on("close", function() {
+				console.log("[!] " + connection.remoteAddress + " has lost WS connection.");
+				const filterFunction = function(client) {
+					return client.connection.remoteAddress !== connection.remoteAddress;
+				};
+				for (let wsEventKey of Object.keys(wsEvents)) {
+					if (wsEventKey === "sendToAll") {
+						continue;
+					}
+					wsEvents[wsEventKey] = wsEvents[wsEventKey].filter(filterFunction);
+				}
+			});
+
+		} catch (err) {
+			console.log(err);
+		}
+	});
+
+	console.log("[+] Init HTTP server");
 	const app = express();
 	const router = express.Router();
 
@@ -19,6 +125,7 @@ async function serverMain() {
 	console.log("[+] Link middlewares");
 	app.use(function(req, res, next) {
 		console.log("[!] " + req.method + " request at " + req.url + " from " + (req.headers['x-forwarded-for'] || req.connection.remoteAddress));
+		res.webSocketEvents = wsEvents; // [IMPORTANT!!]
 		next();
 	});
 	app.use(bodyParser.json());
@@ -50,60 +157,6 @@ async function serverMain() {
 
 	console.log("[+] Start HTTP server");
 	app.listen(constants.NODE_PORT);
-
-	console.log("[+] Init WebSocket server");
-
-	let wsServer = http.createServer(function(request, response) {
-		console.log("[!] Received HTTP request in WS port");
-		response.writeHead(404);
-		response.end();
-	});
-
-	console.log("[+] Start WebSocket server");
-	wsServer.listen(constants.WEB_SOCKET_PORT);
-	let ws = new WebSocketServer({
-		httpServer: wsServer,
-		autoAcceptConnections: false
-	});
-
-	console.log("[+] Configure WS routes");
-
-	const wsEndpoints = require("./app/WS/endpoints.js");
-	let wsRoutes = {};
-	for (let eventName of Object.keys(wsEndpoints)) {
-		wsRoutes[eventName] = require("./app/WS/" + wsEndpoints[eventName] + ".js");
-	}
-	ws.on("request", function(request) {
-		let connection;
-		try {
-			connection = request.accept("cap-protocol", request.origin);
-			console.log("[!] WS connection accepted");
-		} catch (err) {
-			console.log(err);
-		}
-		connection.on("message", function(message) {
-			try {
-				if (message.type === "utf8") {
-					console.log("[!] WS subscription received: ");
-					message = JSON.parse(message.utf8Data);
-					//message.data = JSON.parse(message.data);
-					if (wsRoutes[message.event]) {
-						connection.sendUTF(wsRoutes[message.event](message.data));
-					} else {
-						console.log("Received Message: " + JSON.stringify(message)); // mock of response router
-						connection.sendUTF(JSON.stringify(message)); // mock of response router
-						// handle error
-					}
-				}
-			} catch (err) {
-				console.log(err);
-			}
-
-		});
-		connection.on("close", function() { //  reasonCode, description) {
-			console.log("[!] " + connection.remoteAddress + " has lost WS connection.");
-		});
-	});
 
 	console.log("[+] Working\n");
 }

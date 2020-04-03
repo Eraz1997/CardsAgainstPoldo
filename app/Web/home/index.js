@@ -2,14 +2,6 @@
 angular.module("app.home", ["ngCookies", "ngWebsocket"])
 	.controller("homeController", function($scope, $timeout, $http, $location, $interval, $cookies, $websocket) {
 
-		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol"); // how to generaliza localhost???
-		ws.$on("$open", function() {
-				ws.$emit("gameStart", $scope.nickname);
-			})
-			.$on("hello", function(message) {
-				console.log(JSON.stringify(message));
-			});
-
 		// un sottotitolo è scelto a caso tra quelli nel seguente array
 		let subtitleArray = [
 			"Il risultato del non avere davvero un cazzo da fare",
@@ -38,6 +30,20 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 		$scope.players = [];
 		$scope.playerJoined = false;
 		$scope.nickInputDisabled = false;
+
+		let ws = $websocket.$new("ws://localhost:3500", "cap-protocol");
+		ws.$on("$open", function() {
+				ws.$emit("userJoined");
+				ws.$emit("gameStarted");
+			})
+			.$on("userJoined", function() {
+				polling();
+			})
+			.$on("gameStarted", function() {
+				if ($scope.playerJoined) {
+					$location.path("/game");
+				}
+			});
 
 		async function polling() {
 			try {
@@ -73,6 +79,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				try {
 					let getGameStarted = await $http.get("/api/gameStarted");
 					let getGameEnded = await $http.get("/api/gameEnded");
+					console.log(getGameEnded)
 					if (getGameStarted.data.started && !getGameEnded.data.ended) {
 						$location.path("/game");
 					}
@@ -81,9 +88,9 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 					$scope.playersErr = err.data.error;
 				}
 			}
+			$scope.$digest();
 		}
 		polling();
-		$interval(polling, 2000);
 
 		$scope.enterButton_onClick = async function() {
 			// controlla se il nick è stato inserito e se non è troppo lungo
