@@ -15,7 +15,6 @@ async function serverMain() {
 
 
 	console.log("[+] Init WebSocket server");
-
 	let wsServer = http.createServer(function(request, response) {
 		console.log("[!] Received HTTP request in WS port");
 		response.writeHead(404);
@@ -30,12 +29,15 @@ async function serverMain() {
 	});
 
 	console.log("[+] Configure WS events");
-
 	let wsEvents = {};
 	wsEvents.sendToAll = function(eventName, data) {
 		if (eventName === "sendToAll") {
 			return;
 		}
+		if (!wsEvents[eventName]) {
+			return;
+		}
+		console.log(wsEvents);
 		for (let client of wsEvents[eventName]) {
 			console.log("[!] WS response to " + client.connection.remoteAddress + ": " + eventName);
 			client.connection.sendUTF(JSON.stringify({
