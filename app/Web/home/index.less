@@ -23,32 +23,41 @@
     color: #ffffff;
   }
 
+  a {
+    cursor: pointer;
+  }
+
   .button {
+    display: inline-block;
     background-color: #ffffff;
     color: #000000;
     text-align: center;
     user-select: none;
     display: inline-block;
+    height: 20px;
+    width: auto;
     font-size: 16px;
     border-radius: 10px;
-    border: 5px solid #ffffff;
+    border: 3px solid #ffffff;
     padding: 0 6px;
     margin: 10px;
     cursor: pointer;
+
+    .button-content {
+      vertical-align: middle;
+    }
   }
 
   .start-button-space {
     height: 20px;
 
     .button.start {
-      height: 20px;
-      width: 100px;
     }
   }
 
   .nick-input {
     .button.join {
-      width: 80px;
+      width: 70px;
     }
   }
 
@@ -65,7 +74,6 @@
       align-items: center;
 
       .button.remove {
-        width: 80px;
         margin-left: 10px;
       }
     }
@@ -80,5 +88,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    margin: 8px;
+    font-size: 16px;
   }
 }

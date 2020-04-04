@@ -1,64 +1,56 @@
 <div class="card-content">
   <h1>Card Manager</h1>
   <div class="editor">
-    <div class="panel-container">
-      <div class="panel white">
-        <div class="list-container">
-          <div class="list">
-            <div class="card white"
-                ng-repeat="card in whiteDeck">
-              {{card.text}}
-              <div class="delete-button"
-                  ng-click="deleteCard(card)">
-                <span>Elimina</span>
-              </div>
-            </div>
+    <div class="panel white">
+      <div class="list">
+        <div class="card white"
+            ng-repeat="card in whiteDeck">
+          {{card.text}}
+          <div class="button delete"
+              ng-click="deleteCard(card)">
+            <span class="button-content">Elimina</span>
           </div>
         </div>
-        <div class="controls">
-          <textarea class="textbox"
-              ng-model="whiteText"></textarea>
-          <input type="button"
-              class="send-button"
-              ng-click="sendWhite()"
-              value="Crea nuova carta bianca!" />
-        </div>
-
       </div>
-      <div class="panel black">
-        <div class="list-container">
-          <div class="list">
-            <div class="card black"
-                ng-repeat="card in blackDeck">
-              {{card.text}}
-              <div class="delete-button"
-                  ng-click="deleteCard(card)">
-                <span>Elimina</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="controls">
-          <textarea class="textbox"
-              ng-model="blackText"></textarea>
-          <input type="button"
-              class="send-button"
-              ng-click="sendBlack()"
-              value="Crea nuova carta nera!" />
-        </div>
-
+      <div class="controls">
+        <textarea class="textbox"
+            ng-model="whiteText"></textarea>
+        <input type="button"
+            class="send-button"
+            ng-click="sendWhite()"
+            value="Crea carta" />
       </div>
 
     </div>
+    <div class="panel black">
+      <div class="list">
+        <div class="card black"
+            ng-repeat="card in blackDeck">
+          {{card.text}}
+          <div class="button delete"
+              ng-click="deleteCard(card)">
+            <span class="button-content">Elimina</span>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <textarea class="textbox"
+            ng-model="blackText"></textarea>
+        <input type="button"
+            class="send-button"
+            ng-click="sendBlack()"
+            value="Crea carta" />
+      </div>
+    </div>
   </div>
   <div class="footer">
-    <a class="footerElement"
+    <a class="footer-element"
         ng-click="changeRoute('/home')">
       Home
     </a>
-    <label class="footerElement"
+    <label class="footer-element"
         for="deckFile">Carica un file di testo:</label>
-    <input class="footerElement"
+    <input class="footer-element deck-input"
         type="file"
         id="deckFile"
         name="deckFile"
@@ -67,5 +59,4 @@
     <span></span>
   </div>
 
-</div>
 </div>
