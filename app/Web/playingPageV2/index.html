@@ -1,0 +1,90 @@
+<div class="game-content">
+  <h1 ng-if="player.isMaster">{{player.nickname}} &#9733;</h1>
+  <h1 ng-if="!player.isMaster">{{player.nickname}}</h1>
+  <div class="info-text"></div>
+
+  <div class="no-game"
+      ng-if="!gameStarted">
+    <span>
+      COSA CI FAI QUI BRUTTO CAFONE! NESSUNO STA GIOCANDO!</span>
+  </div>
+
+  <div class="game"
+      ng-if="gameStarted">
+
+    <div class="playing"
+        ng-if="turnPhase === turnPhaseEnum.PLAYING">
+      <div class="black-card">
+
+      </div>
+      <div class="selected-cards">
+        <div class="white-card"
+            ng-repeat="">
+        </div>
+      </div>
+      <div class="cancel button"
+          ng-if="">
+        <span class="button-content"></span>
+      </div>
+      <div class="confirm button"
+          ng-if="">
+        <span class="button-content"></span>
+      </div>
+      <div class="white-cards-container">
+        <svg class="white-card"
+          ng-repeat="">
+          <text></text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="response-list"
+        ng-if="turnPhase === turnPhaseEnum.VOTING">
+      <div class=response-container
+          ng-repeat="">
+        <div class="response">
+          <span class="response-text"
+              ng-repeat=""
+              ng-class="">
+          </span>
+        </div>
+        <div class="vote button">
+          <span class="button-content"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scoreboard"
+        ng-if="turnPhase === turnPhaseEnum.SCORING">
+      <div class=response-container
+          ng-repeat="">
+        <div class="score-text-container">
+          <span class="votes"></span>
+          <span class="score"></span>
+        </div>
+        <div class="response">
+          <span class="response-text"
+              ng-repeat=""
+              ng-class="">
+          </span>
+        </div>
+      </div>
+      <div class="continue button">
+        <span class="button-content"></span>
+      </div>
+    </div>
+
+    <div class="options">
+      <span class="options button"
+          ng-if="player.isMaster"
+          ng-click="endGame()">
+        <span class="button-content">Termina la partita</span>
+      </span>
+      <span class="options button"
+          ng-click="leaveGame()">
+        <span class="button-content">Esci dalla partita</span>
+      </span>
+    </div>
+
+  </div>
+</div>

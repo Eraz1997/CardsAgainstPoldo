@@ -1,0 +1,216 @@
+.game-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: white;
+  user-select: none;
+
+  h1 {
+    line-height: 0.5vw;
+    font-weight: bold;
+    font-size: 5vw;
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+    flex: 0 0 content;
+  }
+
+  h2 {
+    color: white;
+    font-size: 2vw;
+  }
+
+  .no-game-element {
+    flex: 1;
+    color: white;
+    align-self: center;
+    word-wrap: break-word;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      width: 400px;
+      font-size: 4vw;
+      text-align: center;
+    }
+  }
+
+  .game {
+    flex: 1;
+    color: white;
+    align-self: center;
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .turn-winner-card-container {
+      .turn-winner-card {
+        border-style: solid;
+        border-width: 4px;
+        border-color: white;
+        border-radius: 12px;
+        width: 80%;
+        flex: 0 0 200px;
+        font-size: 4vw;
+      }
+
+      .next-turn-button {
+        margin-top: 50px;
+        border-radius: 12px;
+        background-color: green;
+        width: 50%;
+        flex: 0 0 100px;
+        font-size: 4vw;
+      }
+    }
+
+    .choose-best-response-container {
+      width: 70%;
+      flex: 1;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .choose-best-button {
+        background-color: darken(white, 10%);
+        color: black;
+        flex: 1;
+        height: 50px;
+        border-radius: 12px;
+        padding: 10px;
+        cursor: pointer;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+          background-color: darken(white, 20%);
+        }
+
+        &:active {
+          background-color: darken(white, 25%);
+        }
+
+        &.validate {
+          background-color: green;
+
+          &:hover {
+            background-color: darken(green, 2%);
+          }
+
+          &:active {
+            background-color: darken(green, 8%);
+          }
+        }
+
+        &.disabled {
+          background-color: transparent;
+          cursor: default;
+        }
+      }
+    }
+
+    .black-card {
+      border-style: solid;
+      border-width: 4px;
+      border-color: white;
+      border-radius: 12px;
+      width: 80%;
+      flex: 0 0 200px;
+      font-size: 4vw;
+    }
+
+    .my-cards {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: row;
+      overflow-x: scroll;
+
+      .my-card {
+        border-radius: 12px;
+        height: 200px;
+        background-color: white;
+        color: black;
+        flex: 0 0 100px;
+        font-size: 20px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 10px;
+        margin: 20px;
+        cursor: pointer;
+
+        span {}
+
+        &:hover {
+          background-color: darken(white, 10%);
+        }
+
+        &:active {
+          background-color: darken(white, 20%);
+        }
+      }
+    }
+
+    .waiting-for-turn-winner {
+      display: flex;
+      width: 90%;
+      padding: 20px;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        font-size: 6vw;
+        flex: 0 0 content;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+    }
+
+    .options {
+      flex: 0 0 50px;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      padding: 5px;
+      justify-content: space-between;
+
+      .divider {
+        flex: 1;
+      }
+
+      .options-button {
+        background-color: red;
+        color: white;
+        height: 80%;
+        margin-left: 20px;
+        border-radius: 6px;
+        flex: 0 0 content;
+        padding: 5px;
+        word-wrap: break-word;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        cursor: pointer;
+
+        &:hover {
+          background-color: darken(red, 20%);
+        }
+
+        &:active {
+          background-color: darken(red, 30%);
+        }
+      }
+    }
+  }
+}
