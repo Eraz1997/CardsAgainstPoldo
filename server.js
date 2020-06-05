@@ -30,6 +30,7 @@ async function serverMain() {
 
 	console.log("[+] Configure WS events");
 	let wsEvents = {};
+	let wsUsers = {};
 	wsEvents.sendToAll = function(eventName, data) {
 		if (eventName === "sendToAll") {
 			return;
@@ -79,6 +80,9 @@ async function serverMain() {
 					if (!message.event) {
 						throw "[!!] Bad WS message format!";
 					}
+					if (message.event === "register") {
+						wsUsers[connection.remoteAddress] = message.data;
+					}
 					if (wsUnsubscribeEvents.includes(message.event)) {
 						let wsEvent = message.event.substring(1);
 						let oldLen = wsEvents[wsEvent].length;
@@ -118,6 +122,11 @@ async function serverMain() {
 				const filterFunction = function(client) {
 					return client.connection.remoteAddress !== connection.remoteAddress;
 				};
+				if (wsUsers[connection.remoteAddress]) {
+					//if !gameStarted -> remove from wsUsers and call DELETE/wsUsers
+					//if gameStarted -> check tra X secondi
+					//ricorda frontEnd!
+				}
 				for (let wsEventKey of Object.keys(wsEvents)) {
 					if (wsEventKey === "sendToAll") {
 						continue;
