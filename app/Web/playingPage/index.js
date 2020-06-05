@@ -2,7 +2,7 @@
 angular.module("app.game", ["ngCookies", "ngWebsocket"])
 	.controller("gameController", function($scope, $http, $location, $window, $timeout, $cookies, $websocket) {
 
-		let ws = $websocket.$new("ws://ec2-15-188-88-135.eu-west-3.compute.amazonaws.com:3500", "cap-protocol");
+		let ws = $websocket.$new("ws://" + $location.host() + ":3500", "cap-protocol");
 		ws.$on("$open", function() {})
 			.$on("turnWinner", function() {
 				checkTurnWinner();

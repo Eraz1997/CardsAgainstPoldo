@@ -7,7 +7,7 @@
     <div class="button start"
         ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && players.length >= 2"
         ng-click="startButton_onClick()">
-      Inizia partita
+      <span class="button-content">Inizia partita</span>
     </div>
   </div>
 
@@ -25,7 +25,7 @@
         autocomplete="off" />
     <div class="button join"
         ng-click="nickButton_onClick()">
-      {{playerStatusEnum.buttonText[playerStatus]}}
+      <span class="button-content">{{playerStatusEnum.buttonText[playerStatus]}}</span>
     </div>
   </form>
 
@@ -50,7 +50,7 @@
       <div class="button remove"
           ng-if="playerStatus === playerStatusEnum.JOINED && nickname === master && player !== nickname"
           ng-click="removeButton_onClick(player)">
-        Rimuovi
+        <span class="button-content">Rimuovi</span>
       </div>
     </div>
   </div>

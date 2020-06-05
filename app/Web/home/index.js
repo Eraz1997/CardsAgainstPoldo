@@ -42,16 +42,13 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 		];
 		$scope.subtitle = subtitleArray[Math.floor(Math.random() * subtitleArray.length)];
 
-		console.log($scope.playerStatus);
-		console.log(playerStatusEnum.buttonText[$scope.playerStatus]);
-
-		let ws = $websocket.$new("ws://ec2-15-188-88-135.eu-west-3.compute.amazonaws.com:3500", "cap-protocol");
+		let ws = $websocket.$new("ws://" + $location.host() + ":3500", "cap-protocol");
 		ws.$on("$open", function() {
 				ws.$emit("userJoined");
 				ws.$emit("gameStarted");
 			})
 			.$on("userJoined", function() {
-				polling();
+				getGameStatus();
 			})
 			.$on("gameStarted", function() {
 				if ($scope.playerStatus === playerStatusEnum.JOINED) {
@@ -62,7 +59,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 				}
 			});
 
-		async function polling() {
+		async function getGameStatus() {
 			try {
 				$scope.gameEnded = (await $http.get("/api/gameEnded")).data.ended;
 				let getUsers = await $http.get("/api/users");
@@ -118,7 +115,7 @@ angular.module("app.home", ["ngCookies", "ngWebsocket"])
 			}
 			$scope.$apply();
 		}
-		polling();
+		getGameStatus();
 
 		$scope.nickButton_onClick = async function() {
 			switch ($scope.playerStatus) {
